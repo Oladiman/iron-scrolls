@@ -38,9 +38,11 @@ No other dependencies.
 
    ```
    /seo-audit
+   /accessibility-audit
+   /performance-audit
    ```
 
-   Commands are available in every project immediately — no restart needed.
+   All 3 commands are available in every project immediately — no restart needed.
 
 </Steps>
 
@@ -52,8 +54,18 @@ If you only want one command without cloning the whole repo:
 
 ```bash
 mkdir -p ~/.claude/commands
+
+# /seo-audit
 curl -o ~/.claude/commands/seo-audit.md \
   https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/seo-audit.md
+
+# /accessibility-audit
+curl -o ~/.claude/commands/accessibility-audit.md \
+  https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/accessibility-audit.md
+
+# /performance-audit
+curl -o ~/.claude/commands/performance-audit.md \
+  https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/performance-audit.md
 ```
 
 ---
@@ -91,7 +103,9 @@ The installer overwrites any changed commands and reports what was updated.
 
 ```
 ~/.claude/commands/
-└── seo-audit.md
+├── seo-audit.md
+├── accessibility-audit.md
+└── performance-audit.md
 ```
 
 Each `.md` file is one slash command. The filename (without `.md`) becomes the command name.
