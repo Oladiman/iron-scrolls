@@ -1,0 +1,126 @@
+---
+title: /seo-audit
+description: Complete SEO audit for Next.js App Router projects — metadata, OG tags, structured data, robots, sitemap, and image alt text.
+---
+
+import { Steps, Aside, Tabs, TabItem, Badge } from '@astrojs/starlight/components';
+
+<Badge text="Next.js App Router" variant="note" />
+<Badge text="Generates reports" variant="success" />
+
+A complete, automated SEO audit for Next.js App Router projects.
+Run it in any project and Claude acts as a senior SEO engineer — auditing every route,
+generating two professional HTML reports, and applying every fix.
+
+---
+
+## Usage
+
+```
+/seo-audit
+```
+
+To generate reports without applying fixes:
+
+```
+/seo-audit audit only
+```
+
+---
+
+## What it does
+
+| Phase | Action |
+|---|---|
+| **1 — Discovery** | Detects framework version and router type from `package.json`. Lists all routes. Identifies `"use client"` pages that need a `layout.tsx` wrapper to export metadata. |
+| **2 — Metadata audit** | Checks every route for `title`, `description`, `alternates.canonical`, `openGraph`, `twitter`, and `robots: { index: false }` where needed. |
+| **3 — Root layout** | Verifies `metadataBase`, default `openGraph`, and default `twitter` are set in `app/layout.tsx`. |
+| **4 — robots & sitemap** | Checks `app/robots.ts` and `app/sitemap.ts` exist and are correctly configured. |
+| **5 — Structured data** | Looks for JSON-LD scripts. Flags missing schemas (Organization, WebSite, TouristTrip, Product, Article). |
+| **6 — Image alt text** | Scans all `<Image>` and `<img>` tags. Flags empty alts, filename-style alts (`alt="hamburger-menu"`), and implementation-detail alts. |
+| **7 — Thin pages** | Finds stub pages and duplicate-content URLs. Recommends `redirect()` consolidation. |
+| **8 — Reports** | Generates two HTML reports in `reports/` with severity badges, before/after code snippets, and print-friendly CSS. |
+| **9 — Fixes** | Applies every fix unless you said "audit only". |
+
+---
+
+## Reports generated
+
+<Tabs>
+  <TabItem label="Developer report">
+    **`reports/seo-audit-YYYY-MM-DD.html`**
+
+    - Pass/fail summary table for every route
+    - Per-route breakdown: what's present, what's missing, exact code fix
+    - Severity ratings: Critical / High / Medium / Low
+    - robots.txt and sitemap.xml assessment
+    - Structured data gaps with recommended schemas
+    - Alt text violations with file path and line number
+    - Post-fix column showing resolved vs still-open issues
+  </TabItem>
+  <TabItem label="Owner report">
+    **`reports/seo-owner-report-YYYY-MM-DD.html`**
+
+    Written for a non-technical business owner:
+
+    - What SEO is and why it matters (plain English)
+    - Traffic-light table: Green = done, Amber = partial, Red = missing
+    - What content/assets the owner needs to provide (OG images, business info for JSON-LD)
+    - What has already been fixed
+    - What the developer will do next
+    - No code, no jargon
+  </TabItem>
+</Tabs>
+
+---
+
+## What gets fixed
+
+<Aside type="tip" title="Real-world example">
+  The `/seo-audit` command was built after Google surfaced **"Hamburger-menu"** as a sitelink
+  for a travel booking site — because `alt="hamburger-menu"` was the only unique text Google
+  could find across pages. The command caught it, fixed it, and updated all metadata in one session.
+</Aside>
+
+When not in "audit only" mode, the command:
+
+- Adds missing `metadata` exports to server component pages
+- Creates `layout.tsx` wrappers for `"use client"` pages (the correct Next.js App Router pattern)
+- Adds `metadataBase` and default OG/Twitter blocks to the root layout
+- Creates `app/robots.ts` if missing
+- Creates `app/sitemap.ts` if missing — asks about dynamic routes if the data source is unclear
+- Fixes empty and implementation-detail alt text on all images
+- Replaces stub pages with `redirect()` to the canonical URL
+- Adds JSON-LD structured data schemas where missing
+
+---
+
+## Framework support
+
+| Framework | Status |
+|---|---|
+| Next.js 13–15 App Router | ✅ Fully supported |
+| Next.js Pages Router | Planned |
+| Nuxt 3 | Planned |
+| SvelteKit | Planned |
+| Remix | Planned |
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+Or install just this command:
+
+```bash
+mkdir -p ~/.claude/commands
+curl -o ~/.claude/commands/seo-audit.md \
+  https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/seo-audit.md
+```
+
+[View the raw command source on GitHub →](https://github.com/Oladiman/iron-scrolls/blob/main/commands/seo-audit.md)

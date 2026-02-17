@@ -1,0 +1,62 @@
+---
+title: Iron Scrolls
+description: Claude Code custom slash commands. Clone, install, and ship faster.
+template: splash
+hero:
+  tagline: Ancient techniques for modern engineers.
+  actions:
+    - text: Install now
+      link: /iron-scrolls/install/
+      icon: right-arrow
+      variant: primary
+    - text: Browse commands
+      link: /iron-scrolls/commands/seo-audit/
+      icon: open-book
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What is Iron Scrolls?
+
+**Iron Scrolls** is a collection of [Claude Code](https://claude.ai/claude-code) custom slash commands.
+Each command is a structured prompt that turns Claude into a specialist for a specific engineering discipline —
+SEO, accessibility, performance, security, and more.
+
+Type `/seo-audit` in any Claude Code session and Claude performs a complete SEO audit,
+generates two professional HTML reports, and applies every fix. In minutes, not days.
+
+## Install in 30 seconds
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+Then open any project in Claude Code and type the command name.
+
+---
+
+<CardGrid>
+  <Card title="/seo-audit" icon="magnifier">
+    Complete SEO audit for Next.js App Router projects. Audits metadata, OG tags, structured data,
+    robots.txt, sitemap, and image alt text. Generates a developer report and a plain-English owner report.
+    [View docs →](/iron-scrolls/commands/seo-audit/)
+  </Card>
+  <Card title="More coming" icon="add-document">
+    `/accessibility-audit`, `/performance-audit`, `/security-audit`, and more are in the pipeline.
+    [See the build plan →](https://github.com/Oladiman/iron-scrolls/blob/main/BUILDPLAN.md)
+  </Card>
+</CardGrid>
+
+---
+
+## Why slash commands?
+
+Claude Code supports user-defined `/slash-commands` stored as markdown files in `~/.claude/commands/`.
+When you type `/command-name`, the file expands as a fully-structured expert prompt — giving you
+repeatable, project-agnostic workflows without retyping the same instructions across projects.
+
+Iron Scrolls is the permanent, versioned home for these commands.
+One `git clone` and `bash install.sh` and they're live on any machine.

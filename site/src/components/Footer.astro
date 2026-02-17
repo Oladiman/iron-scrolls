@@ -1,0 +1,44 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+---
+
+<Default><slot /></Default>
+
+<div
+  style="
+    text-align: center;
+    padding: 1rem 0 1.5rem;
+    font-size: 0.82rem;
+    color: var(--sl-color-gray-3);
+    border-top: 1px solid var(--sl-color-hairline);
+    margin-top: 0.5rem;
+  "
+>
+  <span>If these scrolls have served you well —</span>
+  <br style="margin-bottom: 0.4rem;" />
+  <a
+    href="https://ko-fi.com/Oladiman"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="
+      color: var(--sl-color-accent);
+      font-weight: 600;
+      text-decoration: none;
+      margin-right: 1rem;
+    "
+  >
+    ☕ Support on Ko-fi
+  </a>
+  <a
+    href="https://github.com/sponsors/Oladiman"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="
+      color: var(--sl-color-accent);
+      font-weight: 600;
+      text-decoration: none;
+    "
+  >
+    ♥ GitHub Sponsors
+  </a>
+</div>

@@ -1,0 +1,102 @@
+---
+title: Installation
+description: Get all Iron Scrolls commands running on your machine in under a minute.
+---
+
+import { Steps, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+## Prerequisites
+
+- [Claude Code](https://claude.ai/claude-code) installed and authenticated
+- `git` and `bash` (macOS / Linux / WSL on Windows)
+
+No other dependencies.
+
+---
+
+## Install all commands
+
+<Steps>
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/Oladiman/iron-scrolls.git
+   ```
+
+2. **Run the installer**
+
+   ```bash
+   cd iron-scrolls
+   bash install.sh
+   ```
+
+   The installer creates `~/.claude/commands/` if it doesn't exist, then copies every command file into it.
+   You'll see a confirmation line for each command installed.
+
+3. **Open any project in Claude Code and run a command**
+
+   ```
+   /seo-audit
+   ```
+
+   Commands are available in every project immediately — no restart needed.
+
+</Steps>
+
+---
+
+## Install a single command manually
+
+If you only want one command without cloning the whole repo:
+
+```bash
+mkdir -p ~/.claude/commands
+curl -o ~/.claude/commands/seo-audit.md \
+  https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/seo-audit.md
+```
+
+---
+
+## Update to the latest commands
+
+When new commands are added or existing ones are updated:
+
+```bash
+cd iron-scrolls   # wherever you cloned it
+git pull
+bash install.sh
+```
+
+The installer overwrites any changed commands and reports what was updated.
+
+---
+
+## Windows
+
+<Tabs>
+  <TabItem label="WSL (recommended)">
+    Run all commands inside a WSL terminal. The installer writes to `~/.claude/commands/`
+    which Claude Code on Windows reads from the WSL home directory.
+  </TabItem>
+  <TabItem label="Git Bash">
+    Git Bash supports `bash install.sh` natively. The `~` path resolves to your Windows home
+    folder (`C:\Users\yourname`), which is where Claude Code looks for commands on Windows.
+  </TabItem>
+</Tabs>
+
+---
+
+## Where commands are stored
+
+```
+~/.claude/commands/
+└── seo-audit.md
+```
+
+Each `.md` file is one slash command. The filename (without `.md`) becomes the command name.
+
+<Aside type="tip">
+  You can open any file in `~/.claude/commands/` to read or edit the prompt directly.
+  Changes take effect immediately in your next Claude Code session.
+</Aside>
