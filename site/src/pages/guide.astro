@@ -1,0 +1,573 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'What is Iron Scrolls?',
+    description: 'A plain-English guide to what Iron Scrolls does, what it checks, and why it matters for your website and your business.',
+  }}
+>
+
+<div class="guide">
+
+  <!-- ── Hero ─────────────────────────────────────── -->
+  <div class="hero-block">
+    <p class="hero-eyebrow">For non-developers</p>
+    <h2 class="hero-headline">Your website. Checked. Fixed. Done.</h2>
+    <p class="hero-sub">
+      Your developer builds your website. Iron Scrolls is the set of expert checks they run — automatically — to make sure it's actually ready. Ready for Google. Ready for every visitor. Ready for customers on slow phones, or using a screen reader, or worrying about their data.
+    </p>
+    <div class="hero-ctas">
+      <a href="/iron-scrolls/try/" class="cta-primary">Try it on your site →</a>
+      <a href="/iron-scrolls/install/" class="cta-secondary">For developers: install →</a>
+    </div>
+  </div>
+
+  <!-- ── The problem ───────────────────────────────── -->
+  <div class="section">
+    <h2 class="section-title">The problem with "the website is ready"</h2>
+    <p class="section-text">
+      When a developer says the website is ready, they mean the code works and the pages load. But "working" and "ready" are not the same thing.
+    </p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <span class="problem-icon">🔍</span>
+        <strong>Google can't find it</strong>
+        <p>Missing page titles, no descriptions, broken Open Graph tags. Your site works — but it's invisible to search engines, or shows up wrong when someone shares it on social media.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">♿</span>
+        <strong>Not everyone can use it</strong>
+        <p>1 in 6 people has some form of disability. Missing alt text, poor colour contrast, and unlabelled buttons lock them out — and expose you to legal risk in many countries.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🐢</span>
+        <strong>It's too slow</strong>
+        <p>Every extra second of load time loses roughly 7% of conversions. Unoptimised images, render-blocking scripts, and missing caching headers silently cost you customers every day.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🔓</span>
+        <strong>Customer data is exposed</strong>
+        <p>Hardcoded API keys, missing security headers, and unvalidated form inputs are front doors left unlocked. You won't know until someone walks through them.</p>
+      </div>
+    </div>
+    <p class="section-text" style="margin-top:1.5rem;">
+      Iron Scrolls gives your developer a single command to find all of these — and fix them — before the website goes live, or at any time after.
+    </p>
+  </div>
+
+  <!-- ── Six checks ────────────────────────────────── -->
+  <div class="section">
+    <h2 class="section-title">Seven expert checks, one command each</h2>
+    <p class="section-text">Think of each check as bringing in a specialist for a day. Except it takes minutes, not weeks, and costs nothing extra.</p>
+
+    <div class="checks-list">
+
+      <div class="check-card">
+        <div class="check-header">
+          <span class="check-icon">🔍</span>
+          <div>
+            <div class="check-name">SEO Audit</div>
+            <div class="check-command">/seo-audit</div>
+          </div>
+        </div>
+        <p class="check-benefit">
+          <strong>What it does:</strong> Checks every page of your website the same way Google does — looking for titles, descriptions, image tags, a sitemap, and the metadata that determines how your site appears in search results and on social media.
+        </p>
+        <p class="check-impact">
+          <span class="impact-label">Why it matters:</span> Without this, Google might show the wrong title for your pages — or your website might not appear at all for the searches your customers are actually making.
+        </p>
+        <div class="check-reports">Generates a developer report + a plain-English owner report</div>
+      </div>
+
+      <div class="check-card">
+        <div class="check-header">
+          <span class="check-icon">♿</span>
+          <div>
+            <div class="check-name">Accessibility Audit</div>
+            <div class="check-command">/accessibility-audit</div>
+          </div>
+        </div>
+        <p class="check-benefit">
+          <strong>What it does:</strong> Checks whether everyone can use your website — including people using screen readers, people with low vision who need high contrast, people who navigate by keyboard only, and people on older devices.
+        </p>
+        <p class="check-impact">
+          <span class="impact-label">Why it matters:</span> In the UK, US, EU, and most developed markets, websites serving the public are legally required to meet accessibility standards (WCAG 2.1 AA). Lawsuits and enforcement are increasing every year.
+        </p>
+        <div class="check-reports">Generates a developer report + a plain-English stakeholder report</div>
+      </div>
+
+      <div class="check-card">
+        <div class="check-header">
+          <span class="check-icon">⚡</span>
+          <div>
+            <div class="check-name">Performance Audit</div>
+            <div class="check-command">/performance-audit</div>
+          </div>
+        </div>
+        <p class="check-benefit">
+          <strong>What it does:</strong> Checks how fast your website loads, what's slowing it down, and whether it causes visual instability — text and images jumping around as the page loads (which Google measures as a ranking signal).
+        </p>
+        <p class="check-impact">
+          <span class="impact-label">Why it matters:</span> Google uses page speed as a search ranking factor. Slow sites rank lower, get fewer visitors, and convert fewer of the visitors they do get — especially on mobile.
+        </p>
+        <div class="check-reports">Generates a developer report + a plain-English stakeholder report</div>
+      </div>
+
+      <div class="check-card">
+        <div class="check-header">
+          <span class="check-icon">🔒</span>
+          <div>
+            <div class="check-name">Security Audit</div>
+            <div class="check-command">/security-audit</div>
+          </div>
+        </div>
+        <p class="check-benefit">
+          <strong>What it does:</strong> Looks for exposed credentials, missing security protections, vulnerabilities in dependencies, and gaps in how user data is handled — aligned with the OWASP Top 10, the industry standard for web security.
+        </p>
+        <p class="check-impact">
+          <span class="impact-label">Why it matters:</span> A single compromised API key or SQL injection vulnerability can expose every customer's data, result in a GDPR fine of up to 4% of annual revenue, and destroy the trust you've built.
+        </p>
+        <div class="check-reports">Generates a developer report + a plain-English stakeholder report</div>
+      </div>
+
+      <div class="check-card">
+        <div class="check-header">
+          <span class="check-icon">👁</span>
+          <div>
+            <div class="check-name">Code Review</div>
+            <div class="check-command">/pr-review</div>
+          </div>
+        </div>
+        <p class="check-benefit">
+          <strong>What it does:</strong> Before any new feature, bug fix, or change goes live, this checks it for correctness, security issues, performance problems, and missing tests — the same things a senior engineer would look for in a peer review.
+        </p>
+        <p class="check-impact">
+          <span class="impact-label">Why it matters:</span> Most bugs that reach production could have been caught with a thorough review. This acts as a second expert set of eyes on every change, before it affects your customers.
+        </p>
+        <div class="check-reports">Generates a structured review report with severity-ranked issues</div>
+      </div>
+
+      <div class="check-card">
+        <div class="check-header">
+          <span class="check-icon">🧪</span>
+          <div>
+            <div class="check-name">Test Coverage Audit</div>
+            <div class="check-command">/test-coverage</div>
+          </div>
+        </div>
+        <p class="check-benefit">
+          <strong>What it does:</strong> Finds every part of your codebase that has no automated tests — the logic handling payments, user accounts, data changes — and writes the missing tests, prioritising the highest-risk areas first.
+        </p>
+        <p class="check-impact">
+          <span class="impact-label">Why it matters:</span> Automated tests are a safety net. Without them, every new feature risks breaking something that was already working. With them, your team can move faster with confidence.
+        </p>
+        <div class="check-reports">Generates a before/after coverage report with remaining gaps</div>
+      </div>
+
+      <div class="check-card">
+        <div class="check-header">
+          <span class="check-icon">🔌</span>
+          <div>
+            <div class="check-name">API Design Review</div>
+            <div class="check-command">/api-design-review</div>
+          </div>
+        </div>
+        <p class="check-benefit">
+          <strong>What it does:</strong> If your application has an API — the layer that connects your website to your database, to third-party services, or to a mobile app — this checks that it's structured correctly, protected, and handles errors gracefully.
+        </p>
+        <p class="check-impact">
+          <span class="impact-label">Why it matters:</span> A poorly designed API is slow to build on, easy to break, and harder to secure. Catching issues early is far cheaper than fixing them after a mobile app or integration depends on them.
+        </p>
+        <div class="check-reports">Generates a structured review report with architectural recommendations</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Reports ───────────────────────────────────── -->
+  <div class="section">
+    <h2 class="section-title">Two reports: one for your developer, one for you</h2>
+    <p class="section-text">
+      For the SEO, accessibility, performance, and security audits, Iron Scrolls generates two separate HTML reports — saved locally, never sent anywhere.
+    </p>
+    <div class="reports-grid">
+      <div class="report-card report-dev">
+        <div class="report-type">Developer report</div>
+        <ul>
+          <li>Exact file paths and line numbers for every issue</li>
+          <li>Code snippets showing what's wrong and how to fix it</li>
+          <li>Severity levels: Critical, High, Medium, Low</li>
+          <li>List of what was auto-fixed vs what needs manual attention</li>
+        </ul>
+      </div>
+      <div class="report-card report-owner">
+        <div class="report-type">Owner report (that's you)</div>
+        <ul>
+          <li>Plain English summary — no code, no jargon</li>
+          <li>What risks your site has right now</li>
+          <li>What the developer fixed and what still needs work</li>
+          <li>Traffic-light status for each area (green / amber / red)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── How it works ──────────────────────────────── -->
+  <div class="section">
+    <h2 class="section-title">How your developer uses it</h2>
+    <p class="section-text">There is no dashboard, no subscription, no third-party service. The commands run locally on your developer's computer against your code. Nothing is sent to a server. Everything stays private.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Install once</strong>
+          <p>Your developer clones the Iron Scrolls repository and runs a one-line installer. All commands are available immediately in every project — no configuration required.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Run a command</strong>
+          <p>In any project, your developer types the command name. Claude — the AI — follows the full audit prompt, reading the actual code and configuration files rather than just the live website.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Get the reports</strong>
+          <p>Two HTML reports are saved locally. Your developer works through the technical one. You receive the owner report — plain English, actionable, no technical background needed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Real example ──────────────────────────────── -->
+  <div class="section">
+    <h2 class="section-title">A real example</h2>
+    <div class="example-card">
+      <p class="example-quote">
+        "We noticed something strange in Google Search Console. Our site had a sitelink — that row of quick-links Google sometimes shows under a search result. Ours said: <strong>Hamburger-menu.</strong>"
+      </p>
+      <p class="example-body">
+        Not "About". Not "Book a trip". The alt text on a nav icon was the only unique text Google could find anywhere on the page — because there were no per-page titles or descriptions. So Google used it.
+      </p>
+      <p class="example-body">
+        Running <strong>/seo-audit</strong> found the alt text issue, the missing metadata on every page, the missing sitemap, and the unindexed checkout pages — all in one pass. Two reports, fixes applied automatically.
+      </p>
+      <a href="/iron-scrolls/blog/seo-hamburger-sitelink/" class="example-link">Read the full story →</a>
+    </div>
+  </div>
+
+  <!-- ── CTA ───────────────────────────────────────── -->
+  <div class="final-cta">
+    <h2>See what it finds on your website</h2>
+    <p>Enter your website URL and pick a check. The analysis runs in your browser — no installation, no account, no cost.</p>
+    <a href="/iron-scrolls/try/" class="cta-primary cta-large">Try it now →</a>
+    <p class="cta-sub">Or share this page with your developer — everything they need is in the <a href="/iron-scrolls/install/">installation guide</a>.</p>
+  </div>
+
+</div>
+
+<style>
+  .guide {
+    max-width: 820px;
+  }
+
+  /* ── Hero ── */
+  .hero-block {
+    padding: 2rem 0 2.5rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    margin-bottom: 3rem;
+  }
+  .hero-eyebrow {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sl-color-accent);
+    margin: 0 0 0.75rem;
+  }
+  .hero-headline {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--sl-color-white);
+    margin: 0 0 1rem;
+    line-height: 1.15;
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.7;
+    max-width: 620px;
+    margin: 0 0 1.75rem;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* ── Buttons ── */
+  .cta-primary {
+    display: inline-block;
+    background: var(--sl-color-accent);
+    color: white !important;
+    text-decoration: none;
+    padding: 0.65rem 1.4rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: background 0.15s;
+  }
+  .cta-primary:hover { background: var(--sl-color-accent-high); }
+  .cta-large { font-size: 1.1rem; padding: 0.8rem 2rem; }
+  .cta-secondary {
+    color: var(--sl-color-gray-2) !important;
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .cta-secondary:hover { color: var(--sl-color-accent) !important; border-color: var(--sl-color-accent); }
+
+  /* ── Sections ── */
+  .section {
+    margin-bottom: 3.5rem;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--sl-color-white);
+    margin: 0 0 0.75rem;
+  }
+  .section-text {
+    color: var(--sl-color-gray-2);
+    font-size: 0.975rem;
+    line-height: 1.7;
+    margin: 0 0 1.5rem;
+  }
+
+  /* ── Problem grid ── */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .problem-card {
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .problem-icon { font-size: 1.6rem; display: block; margin-bottom: 0.6rem; }
+  .problem-card strong {
+    display: block;
+    color: var(--sl-color-white);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  .problem-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--sl-color-gray-3);
+    line-height: 1.6;
+  }
+
+  /* ── Check cards ── */
+  .checks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .check-card {
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    border-left: 3px solid var(--sl-color-accent);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+  }
+  .check-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+  .check-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .check-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--sl-color-white);
+    line-height: 1.2;
+  }
+  .check-command {
+    font-family: var(--sl-font-mono, monospace);
+    font-size: 0.78rem;
+    color: var(--sl-color-accent);
+    margin-top: 0.15rem;
+  }
+  .check-benefit, .check-impact {
+    font-size: 0.9rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.65;
+    margin: 0 0 0.75rem;
+  }
+  .check-impact { margin-bottom: 0.6rem; }
+  .impact-label {
+    font-weight: 700;
+    color: var(--sl-color-gray-1);
+  }
+  .check-reports {
+    font-size: 0.78rem;
+    color: var(--sl-color-gray-4);
+    font-style: italic;
+    border-top: 1px solid var(--sl-color-hairline);
+    padding-top: 0.6rem;
+    margin-top: 0.2rem;
+  }
+
+  /* ── Reports grid ── */
+  .reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .report-card {
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+  }
+  .report-dev { border-top: 3px solid #3a7fd5; }
+  .report-owner { border-top: 3px solid var(--sl-color-accent); }
+  .report-type {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--sl-color-white);
+    margin-bottom: 0.9rem;
+  }
+  .report-card ul {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  .report-card li {
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.65;
+    margin-bottom: 0.35rem;
+  }
+
+  /* ── Steps ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .step {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    align-items: flex-start;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    background: var(--sl-color-accent);
+    color: white;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.1rem;
+  }
+  .step-content strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--sl-color-white);
+    margin-bottom: 0.3rem;
+  }
+  .step-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.65;
+  }
+
+  /* ── Example ── */
+  .example-card {
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    border-left: 3px solid var(--sl-color-accent);
+    border-radius: 8px;
+    padding: 1.5rem 1.75rem;
+  }
+  .example-quote {
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--sl-color-white);
+    line-height: 1.65;
+    margin: 0 0 1rem;
+  }
+  .example-body {
+    font-size: 0.9rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.65;
+    margin: 0 0 0.75rem;
+  }
+  .example-link {
+    display: inline-block;
+    margin-top: 0.25rem;
+    color: var(--sl-color-accent) !important;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .example-link:hover { color: var(--sl-color-accent-high) !important; }
+
+  /* ── Final CTA ── */
+  .final-cta {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    border-radius: 12px;
+    margin-top: 1rem;
+  }
+  .final-cta h2 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--sl-color-white);
+    margin: 0 0 0.75rem;
+  }
+  .final-cta > p:first-of-type {
+    font-size: 1rem;
+    color: var(--sl-color-gray-2);
+    margin: 0 0 1.75rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-sub {
+    margin-top: 1.25rem !important;
+    font-size: 0.85rem;
+    color: var(--sl-color-gray-4);
+  }
+  .cta-sub a {
+    color: var(--sl-color-accent) !important;
+    text-decoration: none;
+  }
+  .cta-sub a:hover { color: var(--sl-color-accent-high) !important; }
+</style>
+
+</StarlightPage>
