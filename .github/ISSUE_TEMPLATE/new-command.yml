@@ -1,0 +1,58 @@
+name: New command proposal
+description: Propose a new slash command for Iron Scrolls
+labels: ["new command"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a new command. Fill this out before starting to write — it helps us align on scope and avoid duplicate work.
+
+  - type: input
+    id: command-name
+    attributes:
+      label: Command name
+      description: What would the slash command be called?
+      placeholder: /your-command-name
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-it-does
+    attributes:
+      label: What does it do?
+      description: Describe the command in 2–3 sentences. What engineering discipline does it cover? What does it output?
+    validations:
+      required: true
+
+  - type: textarea
+    id: phases
+    attributes:
+      label: Proposed phases
+      description: List the phases you're thinking of. Rough is fine — this is for discussion.
+      placeholder: |
+        Phase 1 — Discover project
+        Phase 2 — Check X
+        Phase 3 — Check Y
+        Phase 4 — Generate report
+        Phase 5 — Apply fixes
+
+  - type: textarea
+    id: frameworks
+    attributes:
+      label: Framework / language support
+      description: What frameworks, languages, or tools does this command work with?
+      placeholder: Next.js, Express, Fastify, any Node.js project...
+
+  - type: textarea
+    id: gap
+    attributes:
+      label: Why is this missing from Iron Scrolls?
+      description: What problem does this solve that the existing commands don't?
+    validations:
+      required: true
+
+  - type: input
+    id: tested-on
+    attributes:
+      label: Projects you'd test it on
+      description: What real projects would you use to validate the command?

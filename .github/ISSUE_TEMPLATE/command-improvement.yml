@@ -1,0 +1,52 @@
+name: Command improvement
+description: Report a gap or propose an improvement to an existing command
+labels: ["improvement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for gaps in existing commands — missing checks, incorrect behaviour, or framework coverage that should be added.
+
+  - type: dropdown
+    id: command
+    attributes:
+      label: Which command?
+      options:
+        - /seo-audit
+        - /accessibility-audit
+        - /performance-audit
+        - /security-audit
+        - /pr-review
+        - /api-design-review
+        - /test-coverage
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behaviour
+    attributes:
+      label: Current behaviour
+      description: What does the command do now that is wrong, missing, or incomplete?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: What it should do
+      description: What should the command do instead? Be specific — the more concrete, the easier to implement.
+    validations:
+      required: true
+
+  - type: input
+    id: framework
+    attributes:
+      label: Framework / scenario
+      description: What framework or scenario exposes this gap?
+      placeholder: Next.js 15, Nuxt 3, SvelteKit...
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example (optional)
+      description: A code snippet, file structure, or description of the project where you hit this gap.

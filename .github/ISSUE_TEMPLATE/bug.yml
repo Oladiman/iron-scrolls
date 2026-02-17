@@ -1,0 +1,56 @@
+name: Bug report
+description: A command produced wrong output, failed, or behaved unexpectedly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when a command does something it shouldn't — wrong findings, missed issues, or a crash.
+
+  - type: dropdown
+    id: command
+    attributes:
+      label: Which command?
+      options:
+        - /seo-audit
+        - /accessibility-audit
+        - /performance-audit
+        - /security-audit
+        - /pr-review
+        - /api-design-review
+        - /test-coverage
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe what the command did wrong. Include the command invocation if relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened?
+    validations:
+      required: true
+
+  - type: input
+    id: framework
+    attributes:
+      label: Framework and version
+      placeholder: Next.js 15.1, Nuxt 3.10...
+
+  - type: textarea
+    id: project-context
+    attributes:
+      label: Project context
+      description: Relevant details about the project — structure, config, anything that might explain the behaviour. Don't include private code or secrets.
+
+  - type: input
+    id: claude-version
+    attributes:
+      label: Claude Code version (optional)
+      placeholder: Run `claude --version` to find it

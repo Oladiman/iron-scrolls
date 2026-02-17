@@ -2,9 +2,10 @@
 
 > *"A master does not carry their techniques in their hands — they carry them in their scrolls."*
 
-**Iron Scrolls** is a personal collection of [Claude Code](https://claude.ai/claude-code) custom slash commands. Clone this repo on any machine and run the installer to have every command available instantly in any project.
+**Iron Scrolls** is a collection of [Claude Code](https://claude.ai/claude-code) custom slash commands — pre-encoded expertise for SEO, accessibility, performance, security, code review, API design, and test coverage. Clone this repo on any machine and run the installer to have every command available instantly in any project.
 
 📖 **Full documentation:** [Oladiman.github.io/iron-scrolls](https://Oladiman.github.io/iron-scrolls)
+🤝 **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
@@ -245,21 +246,37 @@ iron-scrolls/
 │   ├── api-design-review.md      # /api-design-review
 │   └── test-coverage.md          # /test-coverage
 ├── site/                         # Astro + Starlight documentation site
-│   └── src/content/docs/         # MDX pages for each command
+│   └── src/content/docs/         # MDX pages for each command + blog
+├── .github/
+│   ├── ISSUE_TEMPLATE/           # New command, improvement, and bug templates
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── workflows/deploy.yml      # GitHub Actions → GitHub Pages
+│   └── FUNDING.yml
+├── posts/                        # Dev.to-ready article drafts
 ├── install.sh                    # Copies commands to ~/.claude/commands/
+├── CONTRIBUTING.md
 └── README.md
 ```
 
 ---
 
-## Adding new commands
+## Contributing
 
-1. Create a new `.md` file in `commands/` — the filename becomes the slash command name.
-2. Write the prompt as markdown inside the file — structure it as numbered phases with specialist-level instructions.
-3. Run `bash install.sh` to install it locally and test it.
-4. Create a matching docs page in `site/src/content/docs/commands/`.
-5. Add the command to the sidebar in `site/astro.config.mjs`.
-6. Commit and push — GitHub Actions deploys the site in ~15 seconds.
+Contributions are welcome — new commands, improvements to existing ones, and docs fixes.
+
+**Quick start:**
+
+```bash
+# Run the docs site locally
+cd site && npm install && npm run dev
+
+# Test a command locally after editing
+bash install.sh
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide: command quality standards, the phase structure conventions, how to write the docs page, and the PR checklist.
+
+**Open an issue first** for new commands or significant changes. Use the [issue templates](https://github.com/Oladiman/iron-scrolls/issues/new/choose) to describe what you want to build.
 
 ---
 
