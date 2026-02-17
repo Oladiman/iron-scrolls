@@ -32,7 +32,7 @@ export default defineConfig({
           label: 'Get Started',
           items: [
             { label: 'Installation', slug: 'install' },
-            { label: 'Try it', link: '/iron-scrolls/try/' },
+            { label: 'Try it', link: '/try/' },
           ],
         },
         {
