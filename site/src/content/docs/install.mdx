@@ -43,9 +43,10 @@ No other dependencies.
    /security-audit
    /pr-review
    /api-design-review
+   /test-coverage
    ```
 
-   All 6 commands are available in every project immediately — no restart needed.
+   All 7 commands are available in every project immediately — no restart needed.
 
 </Steps>
 
@@ -81,6 +82,10 @@ curl -o ~/.claude/commands/pr-review.md \
 # /api-design-review
 curl -o ~/.claude/commands/api-design-review.md \
   https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/api-design-review.md
+
+# /test-coverage
+curl -o ~/.claude/commands/test-coverage.md \
+  https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/test-coverage.md
 ```
 
 ---
@@ -123,7 +128,8 @@ The installer overwrites any changed commands and reports what was updated.
 ├── performance-audit.md
 ├── security-audit.md
 ├── pr-review.md
-└── api-design-review.md
+├── api-design-review.md
+└── test-coverage.md
 ```
 
 Each `.md` file is one slash command. The filename (without `.md`) becomes the command name.

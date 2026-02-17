@@ -1,5 +1,7 @@
 Perform a thorough code review of the current pull request or the changes since the last commit on this branch, and generate a structured review report. Follow every step below.
 
+You can run a subset of phases by including a range in the command, e.g. `/pr-review --phase 2-4` to run only the correctness, security, and performance phases without quality, tests, conventions, or report generation.
+
 ---
 
 ## Phase 1 — Understand the change

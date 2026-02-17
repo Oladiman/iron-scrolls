@@ -1,0 +1,125 @@
+---
+title: /test-coverage
+description: Test coverage audit — discovers untested code paths, writes missing unit and integration tests, and enforces coverage thresholds. Works with Jest, Vitest, Playwright, and Testing Library.
+---
+
+import { Aside, Tabs, TabItem, Badge } from '@astrojs/starlight/components';
+
+<Badge text="Jest · Vitest · Playwright" variant="note" />
+<Badge text="All frameworks" variant="caution" />
+<Badge text="Writes tests" variant="success" />
+
+A comprehensive test coverage audit that runs your coverage tool, maps every untested code path by risk, writes the missing tests using your existing framework and patterns, and optionally enforces coverage thresholds. It doesn't introduce new libraries — it works entirely within what you already have set up.
+
+---
+
+## Usage
+
+```
+/test-coverage
+```
+
+To generate the coverage report without writing any tests:
+
+```
+/test-coverage audit only
+```
+
+To run a specific subset of phases:
+
+```
+/test-coverage --phase 1-4
+```
+
+---
+
+## What it does
+
+| Phase | What Claude does |
+|---|---|
+| **1 — Setup discovery** | Identifies test runner (Jest/Vitest/Playwright), config file, coverage provider, file conventions, and all existing test files |
+| **2 — Run coverage** | Runs `jest --coverage` or `vitest run --coverage`, parses the JSON summary, maps every uncovered line and branch per file |
+| **3 — Map untested paths** | For each source file: happy path, error paths, every conditional branch, edge cases (null/empty/zero), async rejections, guard clauses, side effects |
+| **4 — Prioritise** | Ranks gaps as P0 (auth/payment/mutations), P1 (utilities/API handlers/validation), P2 (UI components), P3 (trivial/presentational) |
+| **5 — Write unit tests** | Writes P0 and P1 tests following your existing patterns — Arrange/Act/Assert, real assertions not mock assertions, no new libraries |
+| **6 — Write integration tests** | If an integration suite exists, adds endpoint tests: valid input, invalid input, missing auth, ownership enforcement |
+| **7 — Write component tests** | If a component test suite exists, adds tests for conditional rendering, interactions, and prop variations |
+| **8 — Generate report** | Produces `test-coverage-YYYY-MM-DD.md` with before/after coverage, gaps addressed, remaining gaps, and infrastructure recommendations |
+| **9 — Enforce thresholds** | If no `coverageThreshold` is configured, adds a safe floor (5% below current level) as a commented-out block in the test config |
+
+---
+
+## Report generated
+
+**`test-coverage-YYYY-MM-DD.md`** — created in the current directory (not committed)
+
+```
+# Test Coverage Report
+Date | Test runner | Coverage before → after
+
+## Summary
+## Files with zero tests
+## Coverage gaps addressed (file / path / test written / priority)
+## Remaining gaps (P2/P3 — not auto-written)
+## Recommendations
+```
+
+<Aside type="tip">
+  Coverage before and after is included in the report so you can measure the exact improvement
+  from each run.
+</Aside>
+
+---
+
+## What gets written automatically
+
+**Auto-written (P0 and P1 gaps):**
+- Unit tests for every auth/payment/mutation code path
+- Unit tests for all utility and pure functions
+- Unit tests for API route handlers (happy path + error path)
+- Unit tests for form validation logic and data transformations
+- Integration tests for untested endpoints (if integration suite exists)
+- Component tests for untested conditional rendering and interactions (if component suite exists)
+
+**Flagged with recommendation (not auto-written):**
+- P2/P3 gaps (trivial getters, pure presentational components)
+- Tests that would require creating a new test infrastructure from scratch
+- Test coverage for third-party library wrappers with no added logic
+
+---
+
+## Standards enforced
+
+Every test written by this command follows these rules:
+
+- **Uses your existing framework** — no new `npm install` or library introductions
+- **Follows your file convention** — co-located `*.test.ts`, `__tests__/`, or `tests/` root, matching what's already there
+- **Uses your existing mocks** — `jest.mock`, `vi.mock`, `__mocks__/`, MSW — whichever pattern is already in use
+- **Tests behaviour, not implementation** — asserts observable output, not that a specific private method was called
+- **Human-readable test names** — `it("returns null when the user has no active subscription")` not `it("works")`
+- **No real network calls** — all external dependencies (database, API, email) are mocked
+
+---
+
+## Framework support
+
+| Test runner | Notes |
+|---|---|
+| Jest | ✅ Full support — `jest --coverage`, `jest.config.ts`, `jest.config.js` |
+| Vitest | ✅ Full support — `vitest run --coverage`, `vitest.config.ts` |
+| Playwright (API testing) | ✅ Integration tests for API endpoints |
+| Cypress | ✅ Component tests and API tests if suite exists |
+| Testing Library | ✅ Used for React/Vue/Svelte component tests |
+| No test runner set up | ⚠ Claude will identify the gaps and recommend a setup — it will not auto-configure a test runner from scratch |
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+[View raw command source →](https://github.com/Oladiman/iron-scrolls/blob/main/commands/test-coverage.md)

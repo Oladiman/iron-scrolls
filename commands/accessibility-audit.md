@@ -1,5 +1,7 @@
 Perform a comprehensive accessibility audit of this web project and generate a full HTML report. Follow every step below.
 
+You can run a subset of phases by including a range in the command, e.g. `/accessibility-audit --phase 1-5` to run only the structural and ARIA checks without generating reports or applying fixes.
+
 ---
 
 ## Phase 1 — Discover the project structure

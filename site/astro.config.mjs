@@ -40,6 +40,7 @@ export default defineConfig({
             { label: '/security-audit', slug: 'commands/security-audit' },
             { label: '/pr-review', slug: 'commands/pr-review' },
             { label: '/api-design-review', slug: 'commands/api-design-review' },
+            { label: '/test-coverage', slug: 'commands/test-coverage' },
           ],
         },
       ],

@@ -1,5 +1,7 @@
 Perform a comprehensive API design review for this project and generate a full report. Works for REST APIs, GraphQL APIs, and Next.js/Nuxt/SvelteKit API routes. Follow every step below.
 
+You can run a subset of phases by including a range in the command, e.g. `/api-design-review --phase 2-6` to run only the naming, HTTP methods, validation, response design, and auth checks without report generation or fixes.
+
 ---
 
 ## Phase 1 — Discover the API surface

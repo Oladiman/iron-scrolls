@@ -204,6 +204,34 @@ REST and GraphQL API design review.
 
 ---
 
+### `/test-coverage`
+
+Test coverage audit — maps untested code paths by risk and writes the missing tests.
+
+| Phase | Action |
+|---|---|
+| 1 | Discovers test runner (Jest/Vitest/Playwright), config, coverage provider, and file conventions |
+| 2 | Runs coverage and parses results — maps every uncovered line and branch per file |
+| 3 | Maps all untested paths: happy path, error paths, conditional branches, edge cases, async paths |
+| 4 | Prioritises gaps as P0 (auth/payment/mutations), P1 (utilities/handlers), P2 (UI), P3 (trivial) |
+| 5 | Writes missing unit tests for P0 and P1 gaps using your existing framework and patterns |
+| 6 | Writes missing integration tests for untested API endpoints (if integration suite exists) |
+| 7 | Writes missing component tests for untested conditional rendering (if component suite exists) |
+| 8 | Generates `test-coverage-YYYY-MM-DD.md` with before/after coverage and remaining gaps |
+| 9 | Adds safe coverage thresholds to test config as a commented-out floor (prevents regressions) |
+
+```
+/test-coverage
+/test-coverage audit only
+/test-coverage --phase 1-4
+```
+
+**Test runners:** Jest, Vitest, Playwright, Cypress, Testing Library
+
+[Full docs →](https://Oladiman.github.io/iron-scrolls/commands/test-coverage/)
+
+---
+
 ## Project structure
 
 ```
@@ -214,7 +242,8 @@ iron-scrolls/
 │   ├── performance-audit.md      # /performance-audit
 │   ├── security-audit.md         # /security-audit
 │   ├── pr-review.md              # /pr-review
-│   └── api-design-review.md      # /api-design-review
+│   ├── api-design-review.md      # /api-design-review
+│   └── test-coverage.md          # /test-coverage
 ├── site/                         # Astro + Starlight documentation site
 │   └── src/content/docs/         # MDX pages for each command
 ├── install.sh                    # Copies commands to ~/.claude/commands/

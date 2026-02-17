@@ -1,5 +1,7 @@
 Perform a comprehensive web performance audit of this project and generate a full HTML report. Follow every step below.
 
+You can run a subset of phases by including a range in the command, e.g. `/performance-audit --phase 1-4` to run only the bundle, image, font, and third-party checks without generating reports or applying fixes.
+
 ---
 
 ## Phase 1 — Discover the project

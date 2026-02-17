@@ -1,5 +1,7 @@
 Perform a comprehensive SEO audit of this Next.js project and generate a full HTML report. Follow every step below.
 
+You can run a subset of phases by including a range in the command, e.g. `/seo-audit --phase 1-4` to run only the discovery and audit phases without generating reports or applying fixes.
+
 ---
 
 ## Phase 1 — Discover the project structure

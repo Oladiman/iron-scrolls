@@ -1,5 +1,7 @@
 Perform a comprehensive security audit of this web project and generate a full HTML report. Follow every step below.
 
+You can run a subset of phases by including a range in the command, e.g. `/security-audit --phase 2-7` to run specific OWASP checks without the discovery phase or report generation.
+
 ---
 
 ## Phase 1 — Discover the project
