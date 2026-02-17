@@ -151,6 +151,27 @@ None of that was the original ask. All of it was found and fixed in the same pas
 
 ---
 
+## What happens after the fix
+
+The code is deployed. But Google's index doesn't update the moment you push.
+
+Here's what the timeline actually looks like:
+
+**Page titles and descriptions** update relatively quickly — often within days of the next crawl. Google re-indexes individual pages much faster than it re-evaluates sitelinks.
+
+**Sitelinks are slow.** Google decides which pages to feature as sitelinks based on its own signals, built up over time. Even after the underlying cause is removed, the old sitelink can persist in the index for **weeks or months** while Google re-evaluates the site structure.
+
+The "Hamburger-menu" sitelink is still showing in the index as of this writing. The root cause — the `alt` attribute and missing metadata — is fixed in the deployed code. The rest is waiting for Google.
+
+<Aside type="tip">
+  To speed up re-indexing, go to **Google Search Console → URL Inspection → Request Indexing** for your homepage. This won't force a sitelink update immediately, but it puts your pages in the priority crawl queue.
+  For sitelinks specifically, you can demote individual sitelinks in Search Console under **Search Appearance → Sitelinks**.
+</Aside>
+
+This is worth knowing before you run `/seo-audit` on your own site: the audit and the fixes are instant. Google's acknowledgement of those fixes is not.
+
+---
+
 ## The command
 
 `/seo-audit` is one of seven commands in **Iron Scrolls** — a collection of Claude Code slash commands for audits, reviews, and test coverage. Clone once, available in every project.
@@ -173,4 +194,4 @@ Nine phases. Two HTML reports. Fixes applied.
 
 ---
 
-*The hamburger-menu sitelink is gone. Google is re-crawling.*
+*The fix is deployed. Google is still catching up — we'll update this post when the sitelink clears.*
