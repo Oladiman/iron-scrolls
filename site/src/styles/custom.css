@@ -17,6 +17,10 @@
   --sl-color-accent-low:  #fde8e5;
   --sl-color-accent:      #c0392b;
   --sl-color-accent-high: #8b1a12;
+
+  /* Ensure parchment white stays readable as a surface, not as text */
+  --sl-color-white:       #f7f2ec;
+  --sl-color-black:       #0d0905;
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */

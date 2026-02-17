@@ -568,6 +568,38 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     text-decoration: none;
   }
   .cta-sub a:hover { color: var(--sl-color-accent-high) !important; }
+
+  /* ── Light mode overrides ── */
+  :global([data-theme='light']) .hero-headline,
+  :global([data-theme='light']) .section-title,
+  :global([data-theme='light']) .step-content strong,
+  :global([data-theme='light']) .check-name,
+  :global([data-theme='light']) .report-type,
+  :global([data-theme='light']) .example-quote,
+  :global([data-theme='light']) .final-cta h2 {
+    color: var(--sl-color-black);
+  }
+
+  :global([data-theme='light']) .problem-card,
+  :global([data-theme='light']) .check-card,
+  :global([data-theme='light']) .report-card,
+  :global([data-theme='light']) .example-card,
+  :global([data-theme='light']) .final-cta {
+    background: var(--sl-color-bg-sidebar);
+    border-color: var(--sl-color-hairline);
+  }
+
+  :global([data-theme='light']) .problem-card strong {
+    color: var(--sl-color-black);
+  }
+
+  :global([data-theme='light']) .impact-label {
+    color: var(--sl-color-text);
+  }
+
+  :global([data-theme='light']) .check-reports {
+    color: var(--sl-color-gray-3);
+  }
 </style>
 
 </StarlightPage>
