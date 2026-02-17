@@ -95,10 +95,10 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
   #url-input {
     flex: 1 1 260px;
     padding: 0.6rem 1rem;
-    background: var(--sl-color-black);
+    background: var(--is-color-surface);
     border: 1px solid var(--sl-color-gray-5);
     border-radius: 6px;
-    color: var(--sl-color-white);
+    color: var(--sl-color-text);
     font-size: 0.9rem;
     font-family: var(--sl-font-mono, monospace);
     outline: none;
@@ -113,7 +113,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 
   #command-select {
     padding: 0.6rem 0.8rem;
-    background: var(--sl-color-black);
+    background: var(--is-color-surface);
     border: 1px solid var(--sl-color-gray-5);
     border-radius: 6px;
     color: var(--sl-color-accent);
@@ -159,7 +159,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     align-items: center;
     gap: 0.75rem;
     padding: 1.25rem 1.5rem;
-    background: var(--sl-color-black);
+    background: var(--is-color-surface);
     border: 1px solid var(--sl-color-gray-5);
     border-radius: 8px;
     font-family: var(--sl-font-mono, monospace);
@@ -200,7 +200,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     flex-wrap: wrap;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: var(--sl-color-black);
+    background: var(--is-color-surface);
     border: 1px solid var(--sl-color-gray-5);
     border-bottom: none;
     border-radius: 8px 8px 0 0;
@@ -238,7 +238,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
   .count-pass { color: #27ae60; }
 
   .results-body {
-    background: #0a0704;
+    background: var(--sl-color-bg);
     border: 1px solid var(--sl-color-gray-5);
     border-top: none;
     border-bottom: none;
@@ -255,7 +255,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     flex-wrap: wrap;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: var(--sl-color-black);
+    background: var(--is-color-surface);
     border: 1px solid var(--sl-color-gray-5);
     border-top: none;
     border-radius: 0 0 8px 8px;
@@ -275,7 +275,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
   /* Result row */
   .result-group {
     padding: 0.4rem 0 0.2rem;
-    border-bottom: 1px solid #1a1008;
+    border-bottom: 1px solid var(--sl-color-hairline);
   }
   .result-group:last-child {
     border-bottom: none;
@@ -311,39 +311,6 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     font-size: 0.78em;
   }
 
-  /* ── Light mode overrides ── */
-  :global([data-theme='light']) #url-input,
-  :global([data-theme='light']) #command-select {
-    background: var(--sl-color-bg-sidebar);
-    color: var(--sl-color-text);
-  }
-  :global([data-theme='light']) #url-input::placeholder {
-    color: var(--sl-color-gray-3);
-  }
-  :global([data-theme='light']) .loading-bar,
-  :global([data-theme='light']) .results-header,
-  :global([data-theme='light']) .results-footer {
-    background: var(--sl-color-bg-sidebar);
-  }
-  :global([data-theme='light']) .error-box {
-    background: #fde8e5;
-    color: var(--sl-color-text);
-  }
-  :global([data-theme='light']) .results-body {
-    background: var(--sl-color-bg-sidebar);
-  }
-  :global([data-theme='light']) .result-group {
-    border-bottom-color: var(--sl-color-hairline);
-  }
-  :global([data-theme='light']) .result-group-label {
-    color: var(--sl-color-gray-3);
-  }
-  :global([data-theme='light']) .result-text {
-    color: var(--sl-color-text);
-  }
-  :global([data-theme='light']) .result-detail {
-    color: var(--sl-color-gray-2);
-  }
 </style>
 
 <script>

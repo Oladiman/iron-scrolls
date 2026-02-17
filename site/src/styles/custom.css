@@ -11,6 +11,9 @@
 
   /* Deep ink black */
   --sl-color-black:       #0d0905;
+
+  /* Elevated surface (slightly lighter than page bg — for cards/panels) */
+  --is-color-surface:     #1c0f0c;
 }
 
 [data-theme='light'] {
@@ -18,9 +21,8 @@
   --sl-color-accent:      #c0392b;
   --sl-color-accent-high: #8b1a12;
 
-  /* Ensure parchment white stays readable as a surface, not as text */
-  --sl-color-white:       #f7f2ec;
-  --sl-color-black:       #0d0905;
+  /* Elevated surface for cards/panels in light mode */
+  --is-color-surface: var(--sl-color-gray-6);
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */

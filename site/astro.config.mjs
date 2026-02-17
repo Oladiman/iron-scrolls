@@ -13,7 +13,7 @@ export default defineConfig({
       logo: {
         light: './src/assets/logo-light.svg',
         dark: './src/assets/logo-dark.svg',
-        replacesTitle: false,
+        replacesTitle: true,
       },
       social: [
         {

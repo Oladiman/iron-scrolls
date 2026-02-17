@@ -360,8 +360,8 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     gap: 1rem;
   }
   .problem-card {
-    background: var(--sl-color-black);
-    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    background: var(--is-color-surface);
+    border: 1px solid var(--sl-color-hairline);
     border-radius: 8px;
     padding: 1.25rem;
   }
@@ -386,8 +386,8 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     gap: 1rem;
   }
   .check-card {
-    background: var(--sl-color-black);
-    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    background: var(--is-color-surface);
+    border: 1px solid var(--sl-color-hairline);
     border-left: 3px solid var(--sl-color-accent);
     border-radius: 8px;
     padding: 1.25rem 1.5rem;
@@ -438,8 +438,8 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     gap: 1rem;
   }
   .report-card {
-    background: var(--sl-color-black);
-    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    background: var(--is-color-surface);
+    border: 1px solid var(--sl-color-hairline);
     border-radius: 8px;
     padding: 1.25rem 1.5rem;
   }
@@ -505,8 +505,8 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 
   /* ── Example ── */
   .example-card {
-    background: var(--sl-color-black);
-    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    background: var(--is-color-surface);
+    border: 1px solid var(--sl-color-hairline);
     border-left: 3px solid var(--sl-color-accent);
     border-radius: 8px;
     padding: 1.5rem 1.75rem;
@@ -538,8 +538,8 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
   .final-cta {
     text-align: center;
     padding: 3rem 2rem;
-    background: var(--sl-color-black);
-    border: 1px solid var(--sl-color-gray-6, #2a1a0f);
+    background: var(--is-color-surface);
+    border: 1px solid var(--sl-color-hairline);
     border-radius: 12px;
     margin-top: 1rem;
   }
@@ -569,37 +569,6 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
   }
   .cta-sub a:hover { color: var(--sl-color-accent-high) !important; }
 
-  /* ── Light mode overrides ── */
-  :global([data-theme='light']) .hero-headline,
-  :global([data-theme='light']) .section-title,
-  :global([data-theme='light']) .step-content strong,
-  :global([data-theme='light']) .check-name,
-  :global([data-theme='light']) .report-type,
-  :global([data-theme='light']) .example-quote,
-  :global([data-theme='light']) .final-cta h2 {
-    color: var(--sl-color-black);
-  }
-
-  :global([data-theme='light']) .problem-card,
-  :global([data-theme='light']) .check-card,
-  :global([data-theme='light']) .report-card,
-  :global([data-theme='light']) .example-card,
-  :global([data-theme='light']) .final-cta {
-    background: var(--sl-color-bg-sidebar);
-    border-color: var(--sl-color-hairline);
-  }
-
-  :global([data-theme='light']) .problem-card strong {
-    color: var(--sl-color-black);
-  }
-
-  :global([data-theme='light']) .impact-label {
-    color: var(--sl-color-text);
-  }
-
-  :global([data-theme='light']) .check-reports {
-    color: var(--sl-color-gray-3);
-  }
 </style>
 
 </StarlightPage>
