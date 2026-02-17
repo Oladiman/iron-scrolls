@@ -1,0 +1,823 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Try a Command',
+    description: 'Enter any public URL and select a command. A real analysis runs in your browser — no installation needed.',
+  }}
+>
+
+<p class="try-intro">
+  Enter any publicly accessible URL and pick a command. The analysis runs directly in your browser using the same checks the full CLI command performs. Commands that need a local codebase (PR review, API review, test coverage) require the CLI.
+</p>
+
+<form id="analyze-form" class="analyze-form">
+  <div class="form-row">
+    <input
+      type="url"
+      id="url-input"
+      placeholder="https://yoursite.com"
+      autocomplete="url"
+      spellcheck="false"
+      required
+    />
+    <select id="command-select">
+      <option value="seo-audit">/seo-audit</option>
+      <option value="accessibility-audit">/accessibility-audit</option>
+      <option value="performance-audit">/performance-audit</option>
+    </select>
+    <button type="submit" id="analyze-btn">
+      <span id="btn-label">Analyze →</span>
+    </button>
+  </div>
+  <p class="form-note">
+    Tip: paste your own site URL for real results. The browser demo runs a subset of phases —
+    <a href="/iron-scrolls/install/">install the CLI</a> for the full multi-phase audit with HTML reports and auto-fix.
+  </p>
+</form>
+
+<div id="loading-state" hidden>
+  <div class="loading-bar">
+    <span class="sword">⚔</span>
+    <span id="loading-text">Fetching page…</span>
+  </div>
+</div>
+
+<div id="error-state" hidden>
+  <div class="error-box">
+    <strong>Could not fetch that URL.</strong>
+    <span id="error-detail"></span>
+    <br />
+    Many sites block browser fetches via CORS — <a href="/iron-scrolls/install/">install the CLI</a> to analyse any site locally.
+  </div>
+</div>
+
+<div id="results-state" hidden>
+  <div class="results-header">
+    <div class="results-meta">
+      <span class="results-command" id="results-command-label"></span>
+      <span class="results-url" id="results-url-label"></span>
+    </div>
+    <div class="results-counts">
+      <span class="count-fail" id="count-fail"></span>
+      <span class="count-warn" id="count-warn"></span>
+      <span class="count-pass" id="count-pass"></span>
+    </div>
+  </div>
+  <div id="results-body" class="results-body"></div>
+  <div class="results-footer">
+    <span id="results-summary"></span>
+    <a href="/iron-scrolls/install/" class="install-cta">Run the full audit locally →</a>
+  </div>
+</div>
+
+<style>
+  .try-intro {
+    color: var(--sl-color-gray-2);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    line-height: 1.65;
+  }
+
+  /* ── Form ── */
+  .analyze-form {
+    margin-bottom: 2rem;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  #url-input {
+    flex: 1 1 260px;
+    padding: 0.6rem 1rem;
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 6px;
+    color: var(--sl-color-white);
+    font-size: 0.9rem;
+    font-family: var(--sl-font-mono, monospace);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  #url-input:focus {
+    border-color: var(--sl-color-accent);
+  }
+  #url-input::placeholder {
+    color: var(--sl-color-gray-4);
+  }
+
+  #command-select {
+    padding: 0.6rem 0.8rem;
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 6px;
+    color: var(--sl-color-accent);
+    font-size: 0.875rem;
+    font-family: var(--sl-font-mono, monospace);
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+  }
+  #command-select:focus {
+    border-color: var(--sl-color-accent);
+  }
+
+  #analyze-btn {
+    padding: 0.6rem 1.4rem;
+    background: var(--sl-color-accent);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    white-space: nowrap;
+  }
+  #analyze-btn:hover {
+    background: var(--sl-color-accent-high);
+  }
+  #analyze-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .form-note {
+    font-size: 0.8rem;
+    color: var(--sl-color-gray-3);
+    margin-top: 0.6rem;
+  }
+
+  /* ── Loading ── */
+  .loading-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    font-family: var(--sl-font-mono, monospace);
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-2);
+  }
+  .sword {
+    animation: pulse 1.2s ease-in-out infinite;
+    font-size: 1rem;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── Error ── */
+  .error-box {
+    padding: 1rem 1.25rem;
+    background: #1a0505;
+    border: 1px solid #c0392b55;
+    border-left: 3px solid var(--sl-color-accent);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.6;
+  }
+  .error-box strong {
+    color: var(--sl-color-accent);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  /* ── Results ── */
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.8rem;
+  }
+  .results-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .results-command {
+    font-family: var(--sl-font-mono, monospace);
+    font-weight: 700;
+    color: var(--sl-color-accent);
+    font-size: 0.875rem;
+  }
+  .results-url {
+    color: var(--sl-color-gray-3);
+    font-size: 0.78rem;
+    font-family: var(--sl-font-mono, monospace);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 260px;
+  }
+  .results-counts {
+    display: flex;
+    gap: 0.6rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    font-family: var(--sl-font-mono, monospace);
+  }
+  .count-fail { color: #e74c3c; }
+  .count-warn { color: #e67e22; }
+  .count-pass { color: #27ae60; }
+
+  .results-body {
+    background: #0a0704;
+    border: 1px solid var(--sl-color-gray-5);
+    border-top: none;
+    border-bottom: none;
+    padding: 0.5rem 0;
+    font-family: var(--sl-font-mono, monospace);
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+
+  .results-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    font-size: 0.8rem;
+    color: var(--sl-color-gray-3);
+  }
+  .install-cta {
+    color: var(--sl-color-accent);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.82rem;
+  }
+  .install-cta:hover {
+    color: var(--sl-color-accent-high);
+  }
+
+  /* Result row */
+  .result-group {
+    padding: 0.4rem 0 0.2rem;
+    border-bottom: 1px solid #1a1008;
+  }
+  .result-group:last-child {
+    border-bottom: none;
+  }
+  .result-group-label {
+    padding: 0.35rem 1rem 0.15rem;
+    font-size: 0.72rem;
+    color: var(--sl-color-gray-4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .result-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.18rem 1rem;
+  }
+  .result-icon {
+    flex-shrink: 0;
+    width: 1.1em;
+    text-align: center;
+  }
+  .result-icon.pass  { color: #27ae60; }
+  .result-icon.fail  { color: #e74c3c; }
+  .result-icon.warn  { color: #e67e22; }
+  .result-icon.info  { color: var(--sl-color-gray-4); }
+  .result-text {
+    color: var(--sl-color-gray-2);
+    flex: 1;
+  }
+  .result-detail {
+    color: var(--sl-color-gray-4);
+    font-size: 0.78em;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('analyze-form');
+  const urlInput = document.getElementById('url-input');
+  const commandSelect = document.getElementById('command-select');
+  const analyzeBtn = document.getElementById('analyze-btn');
+  const btnLabel = document.getElementById('btn-label');
+  const loadingState = document.getElementById('loading-state');
+  const loadingText = document.getElementById('loading-text');
+  const errorState = document.getElementById('error-state');
+  const errorDetail = document.getElementById('error-detail');
+  const resultsState = document.getElementById('results-state');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const url = urlInput.value.trim();
+    const command = commandSelect.value;
+    if (!url) return;
+
+    setLoading(true);
+    hide(errorState);
+    hide(resultsState);
+
+    try {
+      loadingText.textContent = 'Fetching page via proxy…';
+      const html = await fetchViaProxy(url);
+      loadingText.textContent = 'Parsing and running checks…';
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const results = runAudit(command, doc, url);
+      renderResults(command, url, results);
+      hide(loadingState);
+      show(resultsState);
+    } catch (err) {
+      hide(loadingState);
+      errorDetail.textContent = ' ' + (err.message || 'Unknown error.');
+      show(errorState);
+    }
+
+    setLoading(false);
+  });
+
+  /* ── Fetch via CORS proxy ── */
+  async function fetchViaProxy(url) {
+    // Try corsproxy.io first
+    try {
+      const r1 = await fetch(`https://corsproxy.io/?url=${encodeURIComponent(url)}`, { signal: AbortSignal.timeout(10000) });
+      if (r1.ok) return await r1.text();
+    } catch (_) {}
+
+    // Fallback: allorigins.win (returns JSON)
+    try {
+      const r2 = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: AbortSignal.timeout(10000) });
+      if (r2.ok) {
+        const data = await r2.json();
+        if (data.contents) return data.contents;
+      }
+    } catch (_) {}
+
+    throw new Error('Both CORS proxies failed. The site may be blocking external requests, or may require authentication.');
+  }
+
+  /* ── Run the right audit ── */
+  function runAudit(command, doc, url) {
+    if (command === 'seo-audit') return runSeoAudit(doc, url);
+    if (command === 'accessibility-audit') return runAccessibilityAudit(doc, url);
+    if (command === 'performance-audit') return runPerformanceAudit(doc, url);
+    return [];
+  }
+
+  /* ══════════════════════════════════════════════════════
+     /seo-audit — Phase 2 + 3 + 6 checks
+     ══════════════════════════════════════════════════════ */
+  function runSeoAudit(doc, url) {
+    const groups = [];
+
+    // Phase 2 — Metadata
+    const metaChecks = [];
+    const title = doc.querySelector('title');
+    const titleText = title?.textContent?.trim() || '';
+    if (!titleText) {
+      metaChecks.push(fail('Title tag', 'Missing — pages without a <title> won\'t appear correctly in search results'));
+    } else if (titleText.length < 30) {
+      metaChecks.push(warn('Title tag', `Too short (${titleText.length} chars) — aim for 30–60 chars`, titleText));
+    } else if (titleText.length > 60) {
+      metaChecks.push(warn('Title tag', `Too long (${titleText.length} chars) — Google truncates at ~60`, titleText));
+    } else {
+      metaChecks.push(pass('Title tag', `${titleText.length} chars`, titleText));
+    }
+
+    const desc = doc.querySelector('meta[name="description"]');
+    const descText = desc?.getAttribute('content')?.trim() || '';
+    if (!descText) {
+      metaChecks.push(fail('Meta description', 'Missing — no description for search result snippets'));
+    } else if (descText.length < 120) {
+      metaChecks.push(warn('Meta description', `Short (${descText.length} chars) — aim for 120–160 chars`, descText));
+    } else if (descText.length > 160) {
+      metaChecks.push(warn('Meta description', `Long (${descText.length} chars) — may be truncated in SERPs`, descText));
+    } else {
+      metaChecks.push(pass('Meta description', `${descText.length} chars`, descText));
+    }
+
+    const canonical = doc.querySelector('link[rel="canonical"]');
+    canonical
+      ? metaChecks.push(pass('Canonical URL', canonical.getAttribute('href')))
+      : metaChecks.push(warn('Canonical URL', 'Missing — add <link rel="canonical"> to prevent duplicate content issues'));
+
+    const robots = doc.querySelector('meta[name="robots"]');
+    if (robots) {
+      const content = robots.getAttribute('content') || '';
+      content.includes('noindex')
+        ? metaChecks.push(warn('Robots meta', 'noindex is set — this page will not be indexed by search engines', content))
+        : metaChecks.push(pass('Robots meta', content));
+    } else {
+      metaChecks.push(info('Robots meta', 'Not set (defaults to index, follow)'));
+    }
+
+    groups.push({ label: 'Phase 2 — Metadata', checks: metaChecks });
+
+    // Phase 3 — Open Graph & Twitter
+    const ogChecks = [];
+    const ogTitle = doc.querySelector('meta[property="og:title"]');
+    const ogDesc = doc.querySelector('meta[property="og:description"]');
+    const ogImage = doc.querySelector('meta[property="og:image"]');
+    const ogType = doc.querySelector('meta[property="og:type"]');
+
+    ogTitle
+      ? ogChecks.push(pass('og:title', ogTitle.getAttribute('content')))
+      : ogChecks.push(fail('og:title', 'Missing — Open Graph title not set'));
+    ogDesc
+      ? ogChecks.push(pass('og:description', truncate(ogDesc.getAttribute('content'), 80)))
+      : ogChecks.push(fail('og:description', 'Missing — Open Graph description not set'));
+    ogImage
+      ? ogChecks.push(pass('og:image', truncate(ogImage.getAttribute('content'), 60)))
+      : ogChecks.push(fail('og:image', 'Missing — no image shown when link is shared on social media'));
+    ogType
+      ? ogChecks.push(info('og:type', ogType.getAttribute('content')))
+      : ogChecks.push(warn('og:type', 'Not set — add og:type="website" or "article"'));
+
+    const twCard = doc.querySelector('meta[name="twitter:card"]');
+    twCard
+      ? ogChecks.push(pass('twitter:card', twCard.getAttribute('content')))
+      : ogChecks.push(warn('twitter:card', 'Missing — set to "summary_large_image" for good Twitter/X previews'));
+
+    groups.push({ label: 'Phase 3 — Open Graph & Twitter Card', checks: ogChecks });
+
+    // Phase 4 — Structured data
+    const sdChecks = [];
+    const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
+    if (jsonLdScripts.length === 0) {
+      sdChecks.push(warn('JSON-LD', 'No structured data found — consider adding Organization, WebSite, or Article schema'));
+    } else {
+      const types = [];
+      jsonLdScripts.forEach(s => {
+        try {
+          const data = JSON.parse(s.textContent);
+          types.push(data['@type'] || 'Unknown');
+        } catch (_) { types.push('(parse error)'); }
+      });
+      sdChecks.push(pass('JSON-LD', `${jsonLdScripts.length} block(s) found: ${types.join(', ')}`));
+    }
+
+    const h1Tags = doc.querySelectorAll('h1');
+    if (h1Tags.length === 0) {
+      sdChecks.push(fail('H1 tag', 'No H1 found — every page should have exactly one H1'));
+    } else if (h1Tags.length > 1) {
+      sdChecks.push(warn('H1 tag', `${h1Tags.length} H1 tags found — aim for exactly one per page`));
+    } else {
+      sdChecks.push(pass('H1 tag', h1Tags[0].textContent?.trim()));
+    }
+
+    const htmlEl = doc.querySelector('html');
+    const lang = htmlEl?.getAttribute('lang');
+    lang
+      ? sdChecks.push(pass('HTML lang', lang))
+      : sdChecks.push(fail('HTML lang', 'Missing lang attribute on <html> — required for SEO and screen readers'));
+
+    groups.push({ label: 'Phase 4 — Headings & Structured Data', checks: sdChecks });
+
+    // Phase 6 — Image alt text
+    const imgChecks = [];
+    const images = doc.querySelectorAll('img');
+    let missingAlt = 0, emptyAlt = 0, goodAlt = 0;
+    images.forEach(img => {
+      if (!img.hasAttribute('alt')) missingAlt++;
+      else if (img.getAttribute('alt') === '') emptyAlt++;
+      else goodAlt++;
+    });
+
+    if (images.length === 0) {
+      imgChecks.push(info('Images', 'No <img> tags found'));
+    } else {
+      missingAlt > 0
+        ? imgChecks.push(fail('Missing alt', `${missingAlt} image(s) have no alt attribute — fails WCAG and hurts SEO`))
+        : imgChecks.push(pass('Alt attributes', `All ${goodAlt + emptyAlt} images have alt attributes`));
+      if (emptyAlt > 0)
+        imgChecks.push(info('Decorative images', `${emptyAlt} image(s) with empty alt="" (treated as decorative)`));
+    }
+
+    groups.push({ label: 'Phase 6 — Image Alt Text', checks: imgChecks });
+
+    return groups;
+  }
+
+  /* ══════════════════════════════════════════════════════
+     /accessibility-audit — Phase 1–4 checks
+     ══════════════════════════════════════════════════════ */
+  function runAccessibilityAudit(doc) {
+    const groups = [];
+
+    // Phase 1 — Semantic HTML
+    const semChecks = [];
+    const htmlEl = doc.querySelector('html');
+    htmlEl?.getAttribute('lang')
+      ? semChecks.push(pass('HTML lang', htmlEl.getAttribute('lang')))
+      : semChecks.push(fail('HTML lang', 'Missing — screen readers won\'t know the page language'));
+
+    const h1s = doc.querySelectorAll('h1');
+    if (h1s.length === 0) semChecks.push(fail('H1', 'No H1 found — page has no primary heading'));
+    else if (h1s.length > 1) semChecks.push(warn('H1', `${h1s.length} H1 tags — should be exactly one`));
+    else semChecks.push(pass('H1', h1s[0].textContent?.trim()));
+
+    // Check heading hierarchy
+    const headings = Array.from(doc.querySelectorAll('h1,h2,h3,h4,h5,h6'))
+      .map(h => parseInt(h.tagName[1]));
+    let headingJump = false;
+    for (let i = 1; i < headings.length; i++) {
+      if (headings[i] - headings[i - 1] > 1) { headingJump = true; break; }
+    }
+    headingJump
+      ? semChecks.push(fail('Heading hierarchy', `Heading levels are skipped (e.g. H1 → H3) — breaks screen reader navigation`))
+      : semChecks.push(pass('Heading hierarchy', `${headings.length} heading(s) — no level gaps detected`));
+
+    const main = doc.querySelector('main');
+    const nav = doc.querySelector('nav');
+    const footer = doc.querySelector('footer');
+    const header = doc.querySelector('header');
+    const landmarks = [main && 'main', nav && 'nav', footer && 'footer', header && 'header'].filter(Boolean);
+    landmarks.length >= 2
+      ? semChecks.push(pass('Landmark regions', landmarks.join(', ')))
+      : semChecks.push(warn('Landmark regions', 'Few landmark elements found — add <main>, <nav>, <header>, <footer>'));
+
+    groups.push({ label: 'Phase 1 — Semantic HTML', checks: semChecks });
+
+    // Phase 2 — ARIA & labels
+    const ariaChecks = [];
+    const images = doc.querySelectorAll('img');
+    let missingAlt = 0;
+    images.forEach(img => { if (!img.hasAttribute('alt')) missingAlt++; });
+    missingAlt > 0
+      ? ariaChecks.push(fail('Image alt', `${missingAlt} image(s) missing alt attribute — WCAG 1.1.1 failure`))
+      : ariaChecks.push(pass('Image alt', `All ${images.length} images have alt attributes`));
+
+    const inputs = doc.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"])');
+    let unlabelledInputs = 0;
+    inputs.forEach(input => {
+      const id = input.getAttribute('id');
+      const hasLabel = id && doc.querySelector(`label[for="${id}"]`);
+      const hasAriaLabel = input.hasAttribute('aria-label') || input.hasAttribute('aria-labelledby');
+      if (!hasLabel && !hasAriaLabel) unlabelledInputs++;
+    });
+    unlabelledInputs > 0
+      ? ariaChecks.push(fail('Form labels', `${unlabelledInputs} input(s) have no associated label — WCAG 1.3.1 failure`))
+      : ariaChecks.push(pass('Form labels', inputs.length > 0 ? `All ${inputs.length} inputs are labelled` : 'No form inputs found'));
+
+    const buttons = doc.querySelectorAll('button');
+    let unlabelledBtns = 0;
+    buttons.forEach(btn => {
+      const text = btn.textContent?.trim();
+      const hasAriaLabel = btn.hasAttribute('aria-label') || btn.hasAttribute('aria-labelledby');
+      if (!text && !hasAriaLabel) unlabelledBtns++;
+    });
+    unlabelledBtns > 0
+      ? ariaChecks.push(fail('Button labels', `${unlabelledBtns} button(s) have no text or aria-label — WCAG 4.1.2 failure`))
+      : ariaChecks.push(pass('Button labels', `All ${buttons.length} buttons are accessible`));
+
+    const links = doc.querySelectorAll('a[href]');
+    const genericLinks = Array.from(links).filter(a => {
+      const text = a.textContent?.trim().toLowerCase();
+      return ['click here', 'here', 'read more', 'more', 'link', 'this'].includes(text) && !a.getAttribute('aria-label');
+    });
+    genericLinks.length > 0
+      ? ariaChecks.push(warn('Link text', `${genericLinks.length} link(s) have generic text ("click here", "here") — not descriptive for screen readers`))
+      : ariaChecks.push(pass('Link text', `${links.length} links — no generic text detected`));
+
+    groups.push({ label: 'Phase 2 — ARIA & Labels', checks: ariaChecks });
+
+    // Phase 3 — Focus & keyboard
+    const focusChecks = [];
+    const tabindexNegative = doc.querySelectorAll('[tabindex="-1"]');
+    const tabindexPositive = doc.querySelectorAll('[tabindex]:not([tabindex="-1"]):not([tabindex="0"])');
+    tabindexPositive.length > 0
+      ? focusChecks.push(warn('tabindex', `${tabindexPositive.length} element(s) with positive tabindex — disrupts natural keyboard order`))
+      : focusChecks.push(pass('tabindex', 'No positive tabindex values'));
+
+    const skipLink = doc.querySelector('a[href="#main"], a[href="#content"], a[href^="#skip"]');
+    skipLink
+      ? focusChecks.push(pass('Skip link', 'Skip navigation link found'))
+      : focusChecks.push(warn('Skip link', 'No skip navigation link — keyboard users must tab through the entire nav on every page'));
+
+    groups.push({ label: 'Phase 3 — Keyboard Navigation', checks: focusChecks });
+
+    // Phase 6 — Images & media
+    const mediaChecks = [];
+    const videos = doc.querySelectorAll('video');
+    videos.forEach((v, i) => {
+      if (v.hasAttribute('autoplay') && !v.hasAttribute('muted'))
+        mediaChecks.push(fail(`Video #${i + 1}`, 'autoplay without muted — autoplaying audio is a WCAG 1.4.2 failure'));
+      if (!v.querySelector('track'))
+        mediaChecks.push(warn(`Video #${i + 1}`, 'No <track> element for captions — required for WCAG 1.2.2'));
+    });
+    if (videos.length === 0) mediaChecks.push(info('Video', 'No <video> elements found'));
+
+    const iframes = doc.querySelectorAll('iframe');
+    let unnamedFrames = 0;
+    iframes.forEach(f => { if (!f.getAttribute('title') && !f.getAttribute('aria-label')) unnamedFrames++; });
+    unnamedFrames > 0
+      ? mediaChecks.push(fail('iframe titles', `${unnamedFrames} iframe(s) missing title attribute — WCAG 4.1.2 failure`))
+      : iframes.length > 0
+        ? mediaChecks.push(pass('iframe titles', `All ${iframes.length} iframes have titles`))
+        : mediaChecks.push(info('iframes', 'No iframes found'));
+
+    groups.push({ label: 'Phase 6 — Media', checks: mediaChecks });
+
+    return groups;
+  }
+
+  /* ══════════════════════════════════════════════════════
+     /performance-audit — Phase 1–5 checks
+     ══════════════════════════════════════════════════════ */
+  function runPerformanceAudit(doc) {
+    const groups = [];
+
+    // Phase 1 — JavaScript
+    const jsChecks = [];
+    const scripts = doc.querySelectorAll('script[src]');
+    let renderBlockingScripts = 0;
+    scripts.forEach(s => {
+      if (!s.hasAttribute('async') && !s.hasAttribute('defer') && !s.getAttribute('type')?.includes('module')) {
+        renderBlockingScripts++;
+      }
+    });
+    renderBlockingScripts > 0
+      ? jsChecks.push(fail('Render-blocking scripts', `${renderBlockingScripts} <script src> without async or defer — blocks HTML parsing`))
+      : jsChecks.push(pass('Script loading', `${scripts.length} external script(s) — all use async/defer/module`));
+
+    const inlineScripts = doc.querySelectorAll('script:not([src])');
+    let largeInline = 0;
+    inlineScripts.forEach(s => { if ((s.textContent?.length || 0) > 5000) largeInline++; });
+    largeInline > 0
+      ? jsChecks.push(warn('Inline scripts', `${largeInline} large inline script(s) (>5KB) — consider moving to external files with caching`))
+      : jsChecks.push(pass('Inline scripts', `${inlineScripts.length} inline script(s) — none are large`));
+
+    groups.push({ label: 'Phase 1 — JavaScript Bundles', checks: jsChecks });
+
+    // Phase 2 — Images
+    const imgChecks = [];
+    const images = doc.querySelectorAll('img');
+    let missingDimensions = 0, lazyLoaded = 0, noLazy = 0, nonModernFormat = 0;
+    images.forEach(img => {
+      const w = img.getAttribute('width'), h = img.getAttribute('height');
+      if (!w || !h) missingDimensions++;
+      const loading = img.getAttribute('loading');
+      loading === 'lazy' ? lazyLoaded++ : noLazy++;
+      const src = (img.getAttribute('src') || img.getAttribute('data-src') || '').toLowerCase();
+      if (src && !src.includes('.webp') && !src.includes('.avif') && !src.includes('data:') && !src.includes('svg')) {
+        nonModernFormat++;
+      }
+    });
+
+    if (images.length === 0) {
+      imgChecks.push(info('Images', 'No <img> elements found'));
+    } else {
+      missingDimensions > 0
+        ? imgChecks.push(fail('Image dimensions', `${missingDimensions} image(s) missing width/height — causes Cumulative Layout Shift (CLS)`))
+        : imgChecks.push(pass('Image dimensions', `All ${images.length} images have width + height set`));
+
+      noLazy > 0
+        ? imgChecks.push(warn('Lazy loading', `${noLazy} image(s) without loading="lazy" — below-fold images should lazy load`))
+        : imgChecks.push(pass('Lazy loading', `All ${images.length} images use loading="lazy"`));
+
+      nonModernFormat > 0
+        ? imgChecks.push(warn('Image format', `${nonModernFormat} image(s) not in WebP/AVIF format — modern formats are 25–35% smaller`))
+        : imgChecks.push(pass('Image format', 'Images appear to use modern formats'));
+    }
+
+    groups.push({ label: 'Phase 2 — Images', checks: imgChecks });
+
+    // Phase 3 — Fonts
+    const fontChecks = [];
+    const fontLinks = doc.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"], link[rel="stylesheet"][href*="fonts.adobe.com"], link[href*="typekit"]');
+    fontLinks.length > 0
+      ? fontChecks.push(warn('External fonts', `${fontLinks.length} external font stylesheet(s) detected — render-blocking; consider self-hosting or font-display:swap`))
+      : fontChecks.push(pass('External fonts', 'No external font CDN stylesheets detected'));
+
+    const preloadFonts = doc.querySelectorAll('link[rel="preload"][as="font"]');
+    preloadFonts.length > 0
+      ? fontChecks.push(pass('Font preload', `${preloadFonts.length} font(s) preloaded`))
+      : fontChecks.push(info('Font preload', 'No font preloads found — preload critical fonts with <link rel="preload" as="font">'));
+
+    groups.push({ label: 'Phase 3 — Fonts', checks: fontChecks });
+
+    // Phase 4 — Third-party scripts
+    const thirdPartyChecks = [];
+    const allScripts = doc.querySelectorAll('script[src]');
+    let thirdPartyCount = 0;
+    const knownThirdParty = ['googletagmanager', 'google-analytics', 'hotjar', 'intercom', 'segment', 'amplitude', 'facebook.net', 'twitter.com'];
+    allScripts.forEach(s => {
+      const src = s.getAttribute('src') || '';
+      if (knownThirdParty.some(tp => src.includes(tp))) thirdPartyCount++;
+    });
+    thirdPartyCount > 0
+      ? thirdPartyChecks.push(warn('Third-party scripts', `${thirdPartyCount} analytics/tracking script(s) — load with async; consider deferring until user interaction`))
+      : thirdPartyChecks.push(pass('Third-party scripts', 'No common analytics/tracking scripts detected'));
+
+    const iframes = doc.querySelectorAll('iframe');
+    const videoEmbeds = Array.from(iframes).filter(f => {
+      const src = f.getAttribute('src') || '';
+      return src.includes('youtube') || src.includes('vimeo') || src.includes('youtu.be');
+    });
+    videoEmbeds.length > 0
+      ? thirdPartyChecks.push(warn('Video embeds', `${videoEmbeds.length} video iframe(s) — use a facade/placeholder to avoid loading until user clicks`))
+      : thirdPartyChecks.push(info('Video embeds', 'No embedded video iframes detected'));
+
+    groups.push({ label: 'Phase 4 — Third-party Scripts', checks: thirdPartyChecks });
+
+    // Phase 5 — Core Web Vitals hints
+    const cwvChecks = [];
+    const lcpCandidates = doc.querySelectorAll('img[loading="eager"], img:not([loading]), h1, .hero, [class*="hero"], [class*="banner"]');
+    const hasPriorityHint = doc.querySelector('img[fetchpriority="high"], link[rel="preload"][as="image"]');
+    hasPriorityHint
+      ? cwvChecks.push(pass('LCP prioritisation', 'fetchpriority=high or preload found on an image — good for LCP'))
+      : cwvChecks.push(warn('LCP prioritisation', 'No LCP image is prioritised — add fetchpriority="high" to your above-the-fold hero image'));
+
+    const metaViewport = doc.querySelector('meta[name="viewport"]');
+    metaViewport
+      ? cwvChecks.push(pass('Viewport meta', metaViewport.getAttribute('content')))
+      : cwvChecks.push(fail('Viewport meta', 'Missing — required for correct mobile rendering'));
+
+    groups.push({ label: 'Phase 5 — Core Web Vitals Hints', checks: cwvChecks });
+
+    return groups;
+  }
+
+  /* ── Render results ── */
+  function renderResults(command, url, groups) {
+    document.getElementById('results-command-label').textContent = `/${command}`;
+    document.getElementById('results-url-label').textContent = url;
+
+    let totalFail = 0, totalWarn = 0, totalPass = 0;
+    groups.forEach(g => g.checks.forEach(c => {
+      if (c.type === 'fail') totalFail++;
+      else if (c.type === 'warn') totalWarn++;
+      else if (c.type === 'pass') totalPass++;
+    }));
+
+    document.getElementById('count-fail').textContent = totalFail > 0 ? `✗ ${totalFail} fail` : '';
+    document.getElementById('count-warn').textContent = totalWarn > 0 ? `⚠ ${totalWarn} warn` : '';
+    document.getElementById('count-pass').textContent = `✓ ${totalPass} pass`;
+
+    const body = document.getElementById('results-body');
+    body.innerHTML = '';
+    groups.forEach(group => {
+      const groupEl = document.createElement('div');
+      groupEl.className = 'result-group';
+      const labelEl = document.createElement('div');
+      labelEl.className = 'result-group-label';
+      labelEl.textContent = group.label;
+      groupEl.appendChild(labelEl);
+      group.checks.forEach(c => {
+        const row = document.createElement('div');
+        row.className = 'result-row';
+        row.innerHTML = `
+          <span class="result-icon ${c.type}">${iconFor(c.type)}</span>
+          <span class="result-text">${escHtml(c.label)}${c.detail ? ` <span class="result-detail">${escHtml(c.detail)}</span>` : ''}</span>
+        `;
+        groupEl.appendChild(row);
+      });
+      body.appendChild(groupEl);
+    });
+
+    const issueCount = totalFail + totalWarn;
+    document.getElementById('results-summary').textContent =
+      issueCount === 0
+        ? `✓ ${totalPass} checks passed — no issues found`
+        : `${totalFail} failure(s), ${totalWarn} warning(s), ${totalPass} pass — full audit finds more`;
+  }
+
+  /* ── Helpers ── */
+  const pass = (label, detail) => ({ type: 'pass', label, detail });
+  const fail = (label, detail) => ({ type: 'fail', label, detail });
+  const warn = (label, detail) => ({ type: 'warn', label, detail });
+  const info = (label, detail) => ({ type: 'info', label, detail });
+
+  function iconFor(type) {
+    return { pass: '✓', fail: '✗', warn: '⚠', info: '·' }[type] || '·';
+  }
+  function truncate(s, n) { return s && s.length > n ? s.slice(0, n) + '…' : s; }
+  function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function show(el) { el?.removeAttribute('hidden'); }
+  function hide(el) { el?.setAttribute('hidden', ''); }
+  function setLoading(on) {
+    analyzeBtn.disabled = on;
+    btnLabel.textContent = on ? 'Analyzing…' : 'Analyze →';
+    on ? show(loadingState) : hide(loadingState);
+  }
+</script>
+
+</StarlightPage>

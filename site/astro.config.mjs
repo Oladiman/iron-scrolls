@@ -30,7 +30,10 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Get Started',
-          items: [{ label: 'Installation', slug: 'install' }],
+          items: [
+            { label: 'Installation', slug: 'install' },
+            { label: 'Try it', link: '/iron-scrolls/try/' },
+          ],
         },
         {
           label: 'Blog',
