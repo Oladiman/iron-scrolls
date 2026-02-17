@@ -9,6 +9,7 @@ You can run a subset of phases by including a range in the command, e.g. `/seo-a
 1. Find the framework version and router type (App Router vs Pages Router) from `package.json`.
 2. List all route directories under `app/` (or `pages/`).
 3. Identify which pages are "use client" components — these **cannot** export `metadata` directly and need a sibling `layout.tsx` server component.
+4. If the Next.js version is 15 or later, note that `params` in `generateMetadata` and layout/page components is now a `Promise<{...}>` and must be awaited: `const { id } = await params`. Flag any `generateMetadata` functions that access `params.x` directly without awaiting as a **build error** waiting to happen.
 
 ---
 

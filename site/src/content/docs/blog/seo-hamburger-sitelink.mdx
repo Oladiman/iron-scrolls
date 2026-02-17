@@ -96,6 +96,30 @@ export const metadata: Metadata = {
 
 For `"use client"` pages that can't export metadata directly, the fix is a sibling `layout.tsx` server component — the correct Next.js App Router pattern. The layout is a server component and can export metadata; the page file stays a client component.
 
+For dynamic routes using `generateMetadata` to fetch data by `params`, there is one extra step in **Next.js 15**: `params` is now a `Promise` and must be awaited before use.
+
+```ts
+// ✗ Next.js 14 — breaks in Next.js 15
+type Props = { params: { id: string; name: string } };
+
+export async function generateMetadata({ params }: Props) {
+  const trip = await fetchTrip(params.id);
+}
+
+// ✓ Next.js 15 — await params first
+type Props = { params: Promise<{ id: string; name: string }> };
+
+export async function generateMetadata({ params }: Props) {
+  const { id, name } = await params;
+  const trip = await fetchTrip(id);
+}
+```
+
+<Aside type="caution">
+  This applies to any `layout.tsx` or `page.tsx` that uses `generateMetadata` with route params. The TypeScript error it produces is: <em>Type 'Params' does not satisfy the constraint 'Promise&lt;any&gt;'</em>.
+  Apply the same `await params` pattern inside the default export function too.
+</Aside>
+
 **3. Add `metadataBase` to the root layout**
 
 ```ts
