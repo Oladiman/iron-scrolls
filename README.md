@@ -120,14 +120,101 @@ Core Web Vitals performance audit for any web framework.
 
 ---
 
+### `/security-audit`
+
+OWASP-aligned security audit for any web project.
+
+| Phase | Action |
+|---|---|
+| 1 | Secrets exposure — hardcoded keys, `.env` not in `.gitignore`, `NEXT_PUBLIC_*` leaking secrets |
+| 2 | Auth & authorisation — server-side session checks, ownership validation, password hashing, rate limiting |
+| 3 | Injection — SQL, NoSQL, command injection |
+| 4 | XSS — `dangerouslySetInnerHTML`, `innerHTML`, `eval()`, unsafe `href` |
+| 5 | Security headers — CSP, X-Frame-Options, HSTS, Referrer-Policy, Permissions-Policy |
+| 6 | CSRF — mutation endpoints protected, `SameSite` cookies |
+| 7 | Dependencies — `npm audit` CVEs, outdated packages |
+| 8 | File uploads — MIME validation, size limits, path traversal |
+| 9 | Generates two HTML reports: developer report + plain-English stakeholder report |
+| 10 | Applies safe fixes (headers, DOMPurify, `.env.example`, `.gitignore`) |
+
+```
+/security-audit
+/security-audit audit only
+```
+
+**Frameworks:** Next.js, Express, Fastify, Hono, Nuxt, SvelteKit, any Node.js project
+
+[Full docs →](https://Oladiman.github.io/iron-scrolls/commands/security-audit/)
+
+---
+
+### `/pr-review`
+
+Structured pull request review for any codebase.
+
+| Phase | Action |
+|---|---|
+| 1 | Change summary — reads commits, diff, PR description, categorises the change |
+| 2 | Correctness — logic, edge cases, error handling, race conditions, type safety |
+| 3 | Security — new input validation, new API auth, injection risks, new secrets |
+| 4 | Performance — N+1 queries, unnecessary re-renders, blocking operations |
+| 5 | Code quality — naming, dead code, magic numbers, debug statements, TODOs |
+| 6 | Tests — coverage, quality, edge cases, broken existing tests |
+| 7 | Conventions — formatting, import order, API response shape consistency |
+| 8 | Documentation — README gaps, JSDoc, CHANGELOG |
+| 9 | Generates structured review report with severity-ranked issues |
+| 10 | Auto-fixes Critical/High safe issues (missing null checks, dead code, missing await) |
+
+```
+/pr-review
+/pr-review review only
+```
+
+**Works on:** any git repository, any language or framework
+
+[Full docs →](https://Oladiman.github.io/iron-scrolls/commands/pr-review/)
+
+---
+
+### `/api-design-review`
+
+REST and GraphQL API design review.
+
+| Phase | Action |
+|---|---|
+| 1 | Discovers all API routes (App Router, Pages Router, server actions, Express, tRPC, GraphQL) |
+| 2 | Naming & URLs — plural nouns, kebab-case, correct hierarchy, versioning |
+| 3 | HTTP method usage — GET is read-only, correct PUT/PATCH/DELETE semantics |
+| 4 | Request validation — Zod/Joi schemas, type coercion, `stripUnknown` |
+| 5 | Response design — status codes, consistent envelope, error shape, pagination |
+| 6 | Auth & authorisation — all mutating endpoints protected, ownership checks |
+| 7 | Rate limiting — auth endpoints, resource-intensive endpoints, `Retry-After` headers |
+| 8 | Error handling — unhandled rejections, stack traces exposed to clients |
+| 9 | Generates structured review report |
+| 10 | Auto-fixes missing validation schemas, incorrect status codes, error shape, missing `await` |
+
+```
+/api-design-review
+/api-design-review review only
+```
+
+**Frameworks:** Next.js, tRPC, GraphQL, Express, Fastify, Hono, Nuxt, SvelteKit
+
+[Full docs →](https://Oladiman.github.io/iron-scrolls/commands/api-design-review/)
+
+---
+
 ## Project structure
 
 ```
 iron-scrolls/
 ├── commands/
-│   ├── seo-audit.md              # /seo-audit command prompt
-│   ├── accessibility-audit.md    # /accessibility-audit command prompt
-│   └── performance-audit.md      # /performance-audit command prompt
+│   ├── seo-audit.md              # /seo-audit
+│   ├── accessibility-audit.md    # /accessibility-audit
+│   ├── performance-audit.md      # /performance-audit
+│   ├── security-audit.md         # /security-audit
+│   ├── pr-review.md              # /pr-review
+│   └── api-design-review.md      # /api-design-review
 ├── site/                         # Astro + Starlight documentation site
 │   └── src/content/docs/         # MDX pages for each command
 ├── install.sh                    # Copies commands to ~/.claude/commands/

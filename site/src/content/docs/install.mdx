@@ -40,9 +40,12 @@ No other dependencies.
    /seo-audit
    /accessibility-audit
    /performance-audit
+   /security-audit
+   /pr-review
+   /api-design-review
    ```
 
-   All 3 commands are available in every project immediately — no restart needed.
+   All 6 commands are available in every project immediately — no restart needed.
 
 </Steps>
 
@@ -66,6 +69,18 @@ curl -o ~/.claude/commands/accessibility-audit.md \
 # /performance-audit
 curl -o ~/.claude/commands/performance-audit.md \
   https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/performance-audit.md
+
+# /security-audit
+curl -o ~/.claude/commands/security-audit.md \
+  https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/security-audit.md
+
+# /pr-review
+curl -o ~/.claude/commands/pr-review.md \
+  https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/pr-review.md
+
+# /api-design-review
+curl -o ~/.claude/commands/api-design-review.md \
+  https://raw.githubusercontent.com/Oladiman/iron-scrolls/main/commands/api-design-review.md
 ```
 
 ---
@@ -105,7 +120,10 @@ The installer overwrites any changed commands and reports what was updated.
 ~/.claude/commands/
 ├── seo-audit.md
 ├── accessibility-audit.md
-└── performance-audit.md
+├── performance-audit.md
+├── security-audit.md
+├── pr-review.md
+└── api-design-review.md
 ```
 
 Each `.md` file is one slash command. The filename (without `.md`) becomes the command name.

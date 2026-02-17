@@ -1,0 +1,118 @@
+---
+title: /pr-review
+description: Structured pull request review — correctness, security, performance, code quality, tests, and conventions. Works on any branch or open PR.
+---
+
+import { Aside, Tabs, TabItem, Badge } from '@astrojs/starlight/components';
+
+<Badge text="Git-aware" variant="note" />
+<Badge text="All frameworks" variant="caution" />
+<Badge text="Generates report" variant="success" />
+
+A thorough, structured code review of your current branch changes or open pull request. Claude reads the diff, checks every changed file across correctness, security, performance, code quality, tests, and conventions — then produces a clear review report with severity-ranked issues and applies safe fixes.
+
+---
+
+## Usage
+
+Run from inside a git repository on the branch you want reviewed:
+
+```
+/pr-review
+```
+
+To generate the report without applying any fixes:
+
+```
+/pr-review review only
+```
+
+---
+
+## What it reviews
+
+| Phase | What Claude checks |
+|---|---|
+| **1 — Change summary** | Reads commits since `main`, diffs changed files, reads PR description (via `gh pr view` if available), categorises the change type |
+| **2 — Correctness** | Logic accuracy, edge cases (null/undefined, empty arrays, zero values), error handling, race conditions, data integrity, TypeScript type safety, unresolved promises |
+| **3 — Security** | New user input without validation, new API endpoints without auth, new database queries for injection risk, new hardcoded secrets, new dependency additions |
+| **4 — Performance** | N+1 database queries, missing indexes on new query patterns, unnecessary React re-renders, blocking synchronous operations, unoptimised new images, large new dependencies without dynamic imports |
+| **5 — Code quality** | Naming conventions, function length, code duplication, dead code, magic numbers/strings, `console.log` statements, TODO comments |
+| **6 — Tests** | Test coverage for new code, test quality (behaviour vs implementation), edge case coverage, test naming, impact on existing tests |
+| **7 — Conventions** | Formatting, import order, component patterns, API response shape consistency, commit message style |
+| **8 — Documentation** | README updates needed for new env vars, commands, or behaviour; JSDoc for complex exports; CHANGELOG entries |
+
+---
+
+## Report generated
+
+**`pr-review-YYYY-MM-DD-<branch-name>.md`** — created in the current directory (not committed)
+
+```
+# PR Review: <branch name>
+Date | Files changed | Commits
+
+## Summary
+Overall assessment: Approved / Approved with suggestions / Changes requested
+
+## Issues
+### Critical (must fix before merge)
+### High (strongly recommended)
+### Medium (suggested)
+### Low / nitpick
+
+## Positive observations
+
+## Checklist
+```
+
+<Aside type="tip">
+  The report file is created locally and not committed — it's for your use during review,
+  not for the repository history.
+</Aside>
+
+---
+
+## What gets fixed automatically
+
+When not in "review only" mode:
+
+**Auto-fixed (safe, localised changes):**
+- Dead code removal (unused variables, unreachable returns)
+- Missing `null` / `undefined` checks
+- Leftover `console.log` / `debugger` statements
+- Missing `await` on async calls
+- Obvious off-by-one errors
+- Missing error handling around async operations
+
+**Flagged with recommendation (not auto-changed):**
+- Architectural issues
+- Naming and style preferences (Medium/Low)
+- Test coverage gaps
+- Performance issues requiring structural changes
+- Breaking API changes
+
+---
+
+## Framework support
+
+Works on any git repository — not framework-specific. The review is informed by the project's existing patterns, conventions, and stack.
+
+| Language / Stack | Notes |
+|---|---|
+| TypeScript / JavaScript | ✅ Full support |
+| React / Next.js / Vue / Svelte | ✅ Framework patterns recognised |
+| Python / Go / Rust | ✅ Language-appropriate checks |
+| Any other language | ✅ General correctness, security, quality checks apply |
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+[View raw command source →](https://github.com/Oladiman/iron-scrolls/blob/main/commands/pr-review.md)

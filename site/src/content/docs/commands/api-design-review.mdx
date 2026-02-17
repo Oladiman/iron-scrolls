@@ -1,0 +1,105 @@
+---
+title: /api-design-review
+description: REST and GraphQL API design review — naming, HTTP methods, request validation, response shape, auth, rate limiting, error handling, and documentation.
+---
+
+import { Aside, Tabs, TabItem, Badge } from '@astrojs/starlight/components';
+
+<Badge text="REST · GraphQL · tRPC" variant="note" />
+<Badge text="All frameworks" variant="caution" />
+<Badge text="Generates report" variant="success" />
+
+A comprehensive API design review for REST APIs, GraphQL APIs, tRPC routers, and Next.js/Nuxt/SvelteKit API routes. Claude audits every endpoint for naming consistency, correct HTTP method usage, input validation, response shape, authentication, rate limiting, error handling, and documentation gaps — then generates a structured report.
+
+---
+
+## Usage
+
+```
+/api-design-review
+```
+
+To generate the report without applying fixes:
+
+```
+/api-design-review review only
+```
+
+---
+
+## What it reviews
+
+| Phase | What Claude checks |
+|---|---|
+| **1 — Discovery** | Finds all API routes (App Router, Pages Router, server actions, Express, tRPC, GraphQL), lists every endpoint with method/path/description, identifies auth and serialisation patterns |
+| **2 — Naming & URLs** | Plural nouns not verbs (`/users` not `/getUsers`), consistent kebab-case, hierarchy reflecting ownership, action sub-resources (`POST /orders/:id/cancel`), consistent ID format, versioning strategy |
+| **3 — HTTP methods** | `GET` is read-only and idempotent, `POST` creates/triggers, `PUT` replaces, `PATCH` updates partially, `DELETE` removes — flags misuse of any method |
+| **4 — Request validation** | Zod/Joi/Yup schemas present on all endpoints, required vs optional fields clear, query param type coercion, `stripUnknown` for mass assignment prevention, validation error format returns 400 with structured body |
+| **5 — Response design** | Correct status codes (201 for creation, 204 for empty deletes), consistent success envelope, consistent error shape, no sensitive data leakage, pagination on list endpoints, unbounded list returns flagged |
+| **6 — Auth & authorisation** | Auth on every mutating endpoint, resource ownership checks, role checks consistent, public endpoints documented, webhook signature verification |
+| **7 — Rate limiting** | Auth endpoints, resource-intensive endpoints, public endpoints — presence of limits, correct `429` response with `Retry-After`, idempotency keys on payment endpoints |
+| **8 — Error handling** | Unhandled rejections, swallowed errors, stack traces exposed to clients, missing handlers for external API failures |
+| **9 — Documentation** | OpenAPI/Swagger spec presence, JSDoc on complex endpoints, auth requirements clear, CHANGELOG for breaking changes |
+
+---
+
+## Report generated
+
+**`api-design-review-YYYY-MM-DD.md`** — created in the current directory (not committed)
+
+```
+# API Design Review
+Endpoints audited | API style | Date
+
+## Summary
+## Endpoint inventory (method / path / auth / issues)
+## Issues (Critical / High / Medium / Low)
+## Positive observations
+## Architectural recommendations
+```
+
+---
+
+## What gets fixed automatically
+
+When not in "review only" mode:
+
+**Auto-fixed:**
+- Adds Zod validation schemas to endpoints with no input validation (uses existing Zod version if present)
+- Fixes incorrect HTTP status codes (`200` → `201` for created resources, etc.)
+- Standardises error response shape to match the most common existing pattern
+- Adds missing `await` on async database calls in route handlers
+- Adds HTTP method guards (returns `405` for unhandled methods)
+- Adds `.env.example` entries for new environment variables found in route files
+
+**Flagged, not auto-changed:**
+- Rate limiting (requires middleware setup decision)
+- Authentication architecture changes
+- Adding pagination to existing endpoints (breaking change)
+- OpenAPI spec generation (recommends a library: `zod-openapi`, `trpc-openapi`, etc.)
+
+---
+
+## Framework support
+
+| API Style | Notes |
+|---|---|
+| Next.js App Router (`app/api/`) | ✅ Full support — checks route.ts files, server actions |
+| Next.js Pages Router (`pages/api/`) | ✅ Full support |
+| tRPC | ✅ Checks router definitions, input validators, procedures |
+| GraphQL | ✅ Reviews schema design, resolver patterns, N+1 detection |
+| Express / Fastify / Hono | ✅ Full support |
+| Nuxt server routes | ✅ Full support |
+| SvelteKit endpoints | ✅ Full support |
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+[View raw command source →](https://github.com/Oladiman/iron-scrolls/blob/main/commands/api-design-review.md)

@@ -1,0 +1,120 @@
+---
+title: /security-audit
+description: OWASP-aligned security audit — secrets exposure, auth/authorisation, injection, XSS, security headers, CSRF, dependencies, and file uploads.
+---
+
+import { Aside, Tabs, TabItem, Badge } from '@astrojs/starlight/components';
+
+<Badge text="All frameworks" variant="note" />
+<Badge text="OWASP Top 10" variant="danger" />
+<Badge text="Generates reports" variant="success" />
+
+A comprehensive OWASP-aligned security audit for any web project. Run it and Claude scans for secrets exposure, authentication flaws, injection vulnerabilities, XSS, missing security headers, CSRF gaps, dependency CVEs, and more — then generates a developer report and a plain-English stakeholder report.
+
+---
+
+## Usage
+
+```
+/security-audit
+```
+
+To generate reports without applying fixes:
+
+```
+/security-audit audit only
+```
+
+---
+
+## What it audits
+
+| Phase | What Claude checks |
+|---|---|
+| **1 — Discovery** | Framework, runtime, auth library (NextAuth, Clerk, Auth0, Supabase, custom JWT), database layer, all API routes and server actions |
+| **2 — Secrets exposure** | Hardcoded API keys, connection strings with credentials, private keys, JWT secrets assigned literal values, `.env` not in `.gitignore`, `NEXT_PUBLIC_*` containing private keys |
+| **3 — Auth & authorisation** | Server-side session verification on all protected routes, resource ownership checks, HTTP-only cookie sessions, password hashing (bcrypt/argon2), OAuth CSRF `state` param, rate limiting on auth endpoints |
+| **4 — Injection** | SQL injection (string concatenation in queries), NoSQL injection (unsanitised query objects), command injection (`exec`/`eval` with user input) |
+| **5 — XSS** | `dangerouslySetInnerHTML` without sanitisation, `innerHTML` with user data, `href` from user input, `eval()` with user data, `postMessage` without origin check |
+| **6 — Security headers** | `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` |
+| **7 — CSRF** | POST/PUT/PATCH/DELETE routes protected against CSRF, `SameSite=Strict` cookies, server action CSRF handling |
+| **8 — Dependencies** | `npm audit` — Critical and High CVEs, outdated major versions, abandoned packages |
+| **9 — File uploads** | Server-side MIME type validation, file size limits, safe storage location, filename sanitisation for path traversal |
+| **10 — Env vars** | All secrets from `process.env`, `.env.example` present and complete, no secrets in `NEXT_PUBLIC_*` |
+
+---
+
+## Reports generated
+
+<Tabs>
+  <TabItem label="Developer report">
+    **`reports/security-audit-YYYY-MM-DD.html`**
+
+    - Executive summary: Critical / High / Medium / Low counts
+    - Per-issue detail: OWASP category, file path, line reference, vulnerable code snippet, fix
+    - Dependency vulnerability table (from `npm audit`)
+    - Security headers gap table: header, current status, required value
+    - `.env.example` completeness check
+    - Severity colour coding
+  </TabItem>
+  <TabItem label="Stakeholder report">
+    **`reports/security-owner-report-YYYY-MM-DD.html`**
+
+    - What security means for this app and its users
+    - Risk summary: data at risk, attack surface, GDPR implications
+    - Traffic-light summary: user data protection, auth strength, dependency health, secrets management
+    - Top 3 risks in plain English
+    - What the developer will fix
+    - No code, no CVE numbers, no jargon
+  </TabItem>
+</Tabs>
+
+---
+
+## What gets fixed automatically
+
+<Aside type="danger" title="Critical issues are flagged, not always auto-fixed">
+  SQL injection and auth architecture changes require manual review — the command flags the exact
+  location and provides the fix pattern, but does not rewrite query logic without confirmation.
+  Hardcoded secrets are flagged as Critical and you are asked to rotate them immediately.
+</Aside>
+
+When not in "audit only" mode, the command automatically applies:
+
+- Adds missing env var names to `.env.example` with placeholder comments
+- Adds `.env`, `.env.local`, `.env.production` to `.gitignore` if missing
+- Adds missing security headers to `next.config.js` or `middleware.ts`
+- Wraps `dangerouslySetInnerHTML` uses with DOMPurify sanitisation
+- Adds URL validation before using user input as `href`
+- Adds `SameSite=Strict` to session cookie config if missing
+
+Does **not** automatically:
+- Remove or rotate hardcoded secrets (you must do this — flags them as Critical)
+- Rewrite SQL queries to use parameterised queries (flags with exact fix pattern)
+- Change authentication architecture (flags with recommendation)
+- Run `npm audit fix` (shows the command and recommends running manually)
+
+---
+
+## Framework support
+
+| Framework | Notes |
+|---|---|
+| Next.js App Router | ✅ Full support — checks server actions, API routes, middleware |
+| Next.js Pages Router | ✅ Full support |
+| Express / Fastify / Hono | ✅ Full support |
+| Nuxt 3 | ✅ Full support |
+| SvelteKit | ✅ Full support |
+| Any Node.js project | ✅ Full support |
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+[View raw command source →](https://github.com/Oladiman/iron-scrolls/blob/main/commands/security-audit.md)

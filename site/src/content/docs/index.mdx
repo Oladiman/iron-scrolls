@@ -54,9 +54,20 @@ Then open any project in Claude Code and type the command name.
     scripts, and caching strategy. Framework-aware: Next.js, Nuxt, SvelteKit, Astro, and Vite.
     [View docs →](/iron-scrolls/commands/performance-audit/)
   </Card>
-  <Card title="More coming" icon="add-document">
-    `/security-audit`, `/pr-review`, `/api-design-review`, and more are in the pipeline.
-    [See the build plan →](https://github.com/Oladiman/iron-scrolls/blob/main/BUILDPLAN.md)
+  <Card title="/security-audit" icon="warning">
+    OWASP-aligned security audit — secrets exposure, auth flaws, SQL/NoSQL/command injection, XSS,
+    security headers, CSRF, dependency CVEs, and file upload risks.
+    [View docs →](/iron-scrolls/commands/security-audit/)
+  </Card>
+  <Card title="/pr-review" icon="open-book">
+    Structured pull request review across correctness, security, performance, code quality, tests,
+    and conventions. Works on any branch or open PR, any language or framework.
+    [View docs →](/iron-scrolls/commands/pr-review/)
+  </Card>
+  <Card title="/api-design-review" icon="puzzle">
+    REST and GraphQL API design review — naming, HTTP methods, request validation, response shape,
+    auth, rate limiting, and error handling. Supports Next.js, tRPC, Express, Nuxt, and SvelteKit.
+    [View docs →](/iron-scrolls/commands/api-design-review/)
   </Card>
 </CardGrid>
 
