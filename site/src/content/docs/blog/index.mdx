@@ -1,0 +1,21 @@
+---
+title: Blog
+description: Real-world stories, debugging notes, and lessons from using Iron Scrolls commands in production.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+Short articles from real projects — bugs found, fixes applied, and the commands that got there first.
+
+---
+
+<CardGrid>
+  <Card title="My nav icon became a Google sitelink. Here's why." icon="warning">
+    A single `alt="hamburger-menu"` turned a nav icon into a Google sitelink.
+    `/seo-audit` caught it — along with missing metadata, no `metadataBase`, and unindexed transactional pages.
+
+    **Feb 2026 · 4 min read**
+
+    [Read the post →](/iron-scrolls/blog/seo-hamburger-sitelink/)
+  </Card>
+</CardGrid>

@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d0905"/>
+      <stop offset="100%" stop-color="#1a0a07"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e1108"/>
+      <stop offset="100%" stop-color="#150c05"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="16" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle texture lines -->
+  <line x1="0" y1="0" x2="1200" y2="630" stroke="#c0392b" stroke-width="0.3" stroke-opacity="0.08"/>
+  <line x1="0" y1="630" x2="1200" y2="0" stroke="#c0392b" stroke-width="0.3" stroke-opacity="0.06"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1200" height="3" fill="#c0392b"/>
+
+  <!-- Iron Scrolls badge — top left -->
+  <g transform="translate(56, 44)">
+    <text font-family="Georgia, serif" font-size="13" fill="#c0392b" font-weight="600" letter-spacing="2" text-anchor="start">⚔ IRON SCROLLS</text>
+  </g>
+
+  <!-- Tag — top right -->
+  <g transform="translate(1144, 44)">
+    <text font-family="-apple-system, system-ui, sans-serif" font-size="12" fill="#c0392b" letter-spacing="1.5" text-anchor="end">SEO · NEXT.JS</text>
+  </g>
+
+  <!-- Google search card mock -->
+  <g transform="translate(60, 90)" filter="url(#shadow)">
+    <rect x="0" y="0" width="680" height="320" rx="10" ry="10" fill="url(#cardGrad)" stroke="#2e1a0f" stroke-width="1.5"/>
+
+    <!-- Google logo mock -->
+    <text x="24" y="38" font-family="-apple-system, system-ui, sans-serif" font-size="18" font-weight="700" fill="#4285F4">G</text>
+    <text x="39" y="38" font-family="-apple-system, system-ui, sans-serif" font-size="18" font-weight="700" fill="#EA4335">o</text>
+    <text x="52" y="38" font-family="-apple-system, system-ui, sans-serif" font-size="18" font-weight="700" fill="#FBBC05">o</text>
+    <text x="65" y="38" font-family="-apple-system, system-ui, sans-serif" font-size="18" font-weight="700" fill="#4285F4">g</text>
+    <text x="77" y="38" font-family="-apple-system, system-ui, sans-serif" font-size="18" font-weight="700" fill="#34A853">l</text>
+    <text x="85" y="38" font-family="-apple-system, system-ui, sans-serif" font-size="18" font-weight="700" fill="#EA4335">e</text>
+
+    <!-- Search bar mock -->
+    <rect x="18" y="50" width="644" height="36" rx="18" fill="#1c0e07" stroke="#3a1f0f" stroke-width="1"/>
+    <text x="42" y="73" font-family="-apple-system, system-ui, sans-serif" font-size="13" fill="#7a6a5a">tripcooks.tours</text>
+
+    <!-- Divider -->
+    <line x1="18" y1="100" x2="662" y2="100" stroke="#2e1a0f" stroke-width="1"/>
+
+    <!-- Search result — URL -->
+    <text x="24" y="125" font-family="-apple-system, system-ui, sans-serif" font-size="11" fill="#6b9e5e">tripcooks.tours › home</text>
+
+    <!-- Search result — Title -->
+    <text x="24" y="148" font-family="-apple-system, system-ui, sans-serif" font-size="18" fill="#8ab4f8" font-weight="500">TripCooks — Culinary Travel</text>
+
+    <!-- Search result — Description -->
+    <text x="24" y="170" font-family="-apple-system, system-ui, sans-serif" font-size="12" fill="#6e5a4a">Discover unique food travel experiences. Explore the world through its kitchens.</text>
+
+    <!-- Sitelinks section -->
+    <line x1="24" y1="192" x2="656" y2="192" stroke="#2e1a0f" stroke-width="0.5"/>
+    <text x="24" y="212" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#5a4a3a" letter-spacing="0.5">SITELINKS</text>
+
+    <!-- Sitelink chips — first one highlighted as the problem -->
+    <rect x="24" y="222" width="160" height="56" rx="6" fill="#2a1208" stroke="#c0392b" stroke-width="1.5"/>
+    <text x="104" y="248" font-family="-apple-system, system-ui, sans-serif" font-size="12" fill="#c0392b" text-anchor="middle" font-weight="600">Hamburger-menu</text>
+    <text x="104" y="264" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#5a3a2a" text-anchor="middle">tripcooks.tours/#nav</text>
+
+    <!-- Other sitelink chips — normal -->
+    <rect x="196" y="222" width="130" height="56" rx="6" fill="#1c1008" stroke="#2e1a0f" stroke-width="1"/>
+    <text x="261" y="248" font-family="-apple-system, system-ui, sans-serif" font-size="12" fill="#6e8fa8" text-anchor="middle">Our Trips</text>
+    <text x="261" y="264" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#3a2e24" text-anchor="middle">tripcooks.tours/trips</text>
+
+    <rect x="338" y="222" width="130" height="56" rx="6" fill="#1c1008" stroke="#2e1a0f" stroke-width="1"/>
+    <text x="403" y="248" font-family="-apple-system, system-ui, sans-serif" font-size="12" fill="#6e8fa8" text-anchor="middle">Contact</text>
+    <text x="403" y="264" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#3a2e24" text-anchor="middle">tripcooks.tours/contact</text>
+
+    <rect x="480" y="222" width="162" height="56" rx="6" fill="#1c1008" stroke="#2e1a0f" stroke-width="1"/>
+    <text x="561" y="248" font-family="-apple-system, system-ui, sans-serif" font-size="12" fill="#6e8fa8" text-anchor="middle">Book a Trip</text>
+    <text x="561" y="264" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#3a2e24" text-anchor="middle">tripcooks.tours/checkout</text>
+
+    <!-- Warning indicator on the first chip -->
+    <circle cx="172" cy="224" r="8" fill="#c0392b"/>
+    <text x="172" y="228" font-family="-apple-system, system-ui, sans-serif" font-size="11" fill="white" text-anchor="middle">!</text>
+
+    <!-- Fix arrow -->
+    <line x1="104" y1="286" x2="104" y2="308" stroke="#c0392b" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="3,2"/>
+  </g>
+
+  <!-- Right side: article headline -->
+  <g transform="translate(800, 90)">
+    <!-- Label -->
+    <text font-family="-apple-system, system-ui, sans-serif" font-size="11" fill="#c0392b" letter-spacing="2" font-weight="600">BLOG POST</text>
+
+    <!-- Title lines -->
+    <text y="42" font-family="Georgia, 'Times New Roman', serif" font-size="36" fill="#f7f2ec" font-weight="700" letter-spacing="-0.5">My nav icon became</text>
+    <text y="84" font-family="Georgia, 'Times New Roman', serif" font-size="36" fill="#f7f2ec" font-weight="700" letter-spacing="-0.5">a Google sitelink.</text>
+    <text y="126" font-family="Georgia, 'Times New Roman', serif" font-size="36" fill="#c0392b" font-weight="700" letter-spacing="-0.5">Here's why.</text>
+
+    <!-- Divider -->
+    <rect y="152" width="320" height="2" fill="#c0392b" opacity="0.4"/>
+
+    <!-- Summary text -->
+    <text y="180" font-family="-apple-system, system-ui, sans-serif" font-size="14" fill="#8a7a6a" letter-spacing="0.1">A single alt attribute — alt="hamburger-menu"</text>
+    <text y="200" font-family="-apple-system, system-ui, sans-serif" font-size="14" fill="#8a7a6a">— turned a nav icon into a Google sitelink.</text>
+    <text y="230" font-family="-apple-system, system-ui, sans-serif" font-size="14" fill="#6a5a4a">/seo-audit caught it in seconds.</text>
+
+    <!-- Metadata -->
+    <text y="290" font-family="-apple-system, system-ui, sans-serif" font-size="11" fill="#4a3a2a">February 2026 · 4 min read</text>
+  </g>
+
+  <!-- Bottom strip -->
+  <rect x="0" y="590" width="1200" height="40" fill="#0d0905" opacity="0.8"/>
+  <text x="56" y="613" font-family="-apple-system, system-ui, sans-serif" font-size="11" fill="#4a3a2a">oladiman.github.io/iron-scrolls</text>
+  <text x="1144" y="613" font-family="-apple-system, system-ui, sans-serif" font-size="11" fill="#4a3a2a" text-anchor="end">Claude Code slash commands</text>
+  <line x1="0" y1="590" x2="1200" y2="590" stroke="#2e1a0f" stroke-width="1"/>
+</svg>

@@ -1,0 +1,152 @@
+---
+title: "My nav icon became a Google sitelink. Here's why — and how /seo-audit caught it."
+description: A single alt attribute turned a hamburger icon into a Google sitelink. Here's the root cause, the fix, and how /seo-audit found all of it in one pass.
+---
+
+import { Aside, Badge } from '@astrojs/starlight/components';
+import heroImage from '../../../assets/blog/seo-hamburger-sitelink.svg';
+
+<Badge text="SEO" variant="note" />
+<Badge text="Next.js" variant="caution" />
+<Badge text="4 min read" variant="default" />
+
+<br />
+
+<img src={heroImage.src} alt="Google search result showing 'Hamburger-menu' as a sitelink, with Iron Scrolls branding" style="width:100%;border-radius:10px;margin:1.5rem 0 2rem;" />
+
+We noticed something strange in Google Search Console.
+
+Our site had a sitelink — that row of quick-links Google sometimes shows under a main search result. Sitelinks are great. They help users jump straight to the section they want. Ours said:
+
+> **Hamburger-menu**
+
+Not "About". Not "Book a trip". *Hamburger-menu.*
+
+---
+
+## What happened
+
+Google builds sitelinks from what it can read about your pages. When there's no real metadata to work with, it reaches for whatever text it can find — headings, link text, alt attributes.
+
+Our mobile nav icon had this:
+
+```tsx
+<Image src={menuIcon} alt="hamburger-menu" />
+```
+
+That was the only unique, descriptive text Google could find anywhere on that element. So it used it.
+
+Two things made this worse:
+
+**1. No per-page `<title>` or `<meta name="description">`**
+
+Every page fell back to the root layout's generic title, so Google couldn't distinguish between them. With nothing to differentiate pages, it reached deeper into the markup for signals — and found the alt text.
+
+**2. No `metadataBase` in the root layout**
+
+Without `metadataBase`, relative Open Graph image URLs don't resolve correctly. Google had nothing visual to anchor the page to, which made the text signals even more weight-bearing than they should be.
+
+---
+
+## What /seo-audit found
+
+Before writing a single line of the fix, I ran `/seo-audit` on the project.
+
+It found, phase by phase:
+
+- **Phase 2 (route audit):** Every page missing a `title`, `description`, and `canonical`. The root layout had no `metadataBase`.
+- **Phase 3 (root layout):** No default OG or Twitter Card tags. No `metadataBase`.
+- **Phase 6 (image alt text):** `alt="hamburger-menu"` on the mobile nav icon. Social media icons with `alt="instagram-logo"` and `alt="social-media-icon"`.
+- **Phase 7 (thin pages):** `/privacy` and `/terms` both with no unique content — flagged as duplication candidates.
+- **Phase 4 (robots/sitemap):** No `robots.ts`. No `sitemap.ts`. Google crawling in the dark.
+
+It generated two HTML reports — a developer report with file paths and line references, and a plain-English report for the client — then applied every safe fix automatically.
+
+<Aside type="tip">
+  The image alt audit is Phase 6. If you only want that check, run `/seo-audit --phase 6`.
+</Aside>
+
+---
+
+## The three root fixes
+
+**1. Fix the alt text**
+
+```tsx
+// before
+<Image src={menuIcon} alt="hamburger-menu" />
+
+// after
+<Image src={menuIcon} alt="Open navigation menu" />
+```
+
+The rule: alt text on decorative/functional icons should describe the *action*, not the *object*. A hamburger icon opens the navigation — that's what the alt should say.
+
+**2. Add per-page metadata to every route**
+
+```ts
+// app/about/page.tsx
+export const metadata: Metadata = {
+  title: 'About — TripCooks',
+  description: 'We plan culinary travel experiences...',
+  alternates: { canonical: 'https://tripcooks.tours/about' },
+  openGraph: { title: 'About — TripCooks', ... },
+};
+```
+
+For `"use client"` pages that can't export metadata directly, the fix is a sibling `layout.tsx` server component — the correct Next.js App Router pattern. The layout is a server component and can export metadata; the page file stays a client component.
+
+**3. Add `metadataBase` to the root layout**
+
+```ts
+export const metadata: Metadata = {
+  metadataBase: new URL('https://tripcooks.tours'),
+  openGraph: {
+    siteName: 'TripCooks',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: { card: 'summary_large_image', site: '@tripcooks' },
+};
+```
+
+With `metadataBase` set, all relative OG image paths in child pages resolve correctly. Without it, Next.js silently outputs malformed URLs and crawlers ignore the OG tags.
+
+---
+
+## The bonus fixes
+
+While it was in there, `/seo-audit` also:
+
+- Generated `app/robots.ts` and `app/sitemap.ts` (dynamic, pulling trip URLs from the CMS)
+- Added `robots: { index: false }` to `/cart`, `/checkout`, and `/payment-success`
+- Added Organization and WebSite JSON-LD structured data to the home layout
+- Added TouristTrip JSON-LD to individual trip pages
+
+None of that was the original ask. All of it was found and fixed in the same pass.
+
+---
+
+## The command
+
+`/seo-audit` is one of seven commands in **Iron Scrolls** — a collection of Claude Code slash commands for audits, reviews, and test coverage. Clone once, available in every project.
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+Then in any Next.js project:
+
+```
+/seo-audit
+```
+
+Nine phases. Two HTML reports. Fixes applied.
+
+[Browse all commands →](/iron-scrolls/commands/seo-audit/)
+
+---
+
+*The hamburger-menu sitelink is gone. Google is re-crawling.*

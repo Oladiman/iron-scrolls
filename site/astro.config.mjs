@@ -32,6 +32,13 @@ export default defineConfig({
           items: [{ label: 'Installation', slug: 'install' }],
         },
         {
+          label: 'Blog',
+          items: [
+            { label: 'All posts', slug: 'blog' },
+            { label: 'Hamburger-menu sitelink', slug: 'blog/seo-hamburger-sitelink' },
+          ],
+        },
+        {
           label: 'Commands',
           items: [
             { label: '/seo-audit', slug: 'commands/seo-audit' },
