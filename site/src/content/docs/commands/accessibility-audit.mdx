@@ -1,0 +1,112 @@
+---
+title: /accessibility-audit
+description: WCAG 2.1 AA accessibility audit — semantic HTML, ARIA, keyboard navigation, colour contrast, focus visibility, images, and motion.
+---
+
+import { Aside, Tabs, TabItem, Badge } from '@astrojs/starlight/components';
+
+<Badge text="All frameworks" variant="note" />
+<Badge text="WCAG 2.1 AA" variant="caution" />
+<Badge text="Generates reports" variant="success" />
+
+A complete WCAG 2.1 AA accessibility audit. Run it in any web project and Claude audits every component for keyboard access, screen reader support, colour contrast, semantic structure, and motion safety — then generates a developer report and a plain-English stakeholder report.
+
+---
+
+## Usage
+
+```
+/accessibility-audit
+```
+
+To generate reports without applying fixes:
+
+```
+/accessibility-audit audit only
+```
+
+---
+
+## What it audits
+
+| Phase | What Claude checks |
+|---|---|
+| **1 — Semantic HTML** | Heading hierarchy (`h1` → `h2` → `h3`, one `h1` per page), landmark regions (`<main>`, `<nav>`, `<header>`, `<footer>`), lists, tables with `<th scope>`, `<button>` vs `<a>` vs `<div onClick>`, form `<label>` associations |
+| **2 — ARIA usage** | `aria-label` on icon-only buttons, `aria-expanded` on toggles, `aria-controls` linking triggers to panels, `aria-live` on dynamic regions, `role="dialog"` on modals, incorrect or redundant ARIA |
+| **3 — Keyboard navigation** | Dropdowns, modals, carousels, accordions, tabs, date pickers, custom selects — verifies each is fully operable without a mouse |
+| **4 — Focus visibility** | Every focusable element has a visible focus ring. Flags `outline: none` without a replacement. Checks focus indicator contrast (3:1 minimum). |
+| **5 — Colour contrast** | Normal text (4.5:1), large text (3:1), UI borders and focus indicators (3:1), placeholder text (4.5:1). Calculates ratios from hex values in CSS/Tailwind classes. |
+| **6 — Images & media** | Non-empty `alt` on informative images, `alt=""` on decorative images, `<track kind="captions">` on video, transcripts for audio, pause controls for autoplay |
+| **7 — Motion & animation** | `@media (prefers-reduced-motion: reduce)` on all non-trivial animations, pause controls for animations > 5 seconds |
+| **8 — Touch targets** | Minimum 44×44px tap target on all interactive elements, especially icon buttons |
+
+---
+
+## Reports generated
+
+<Tabs>
+  <TabItem label="Developer report">
+    **`reports/accessibility-audit-YYYY-MM-DD.html`**
+
+    - Issues by WCAG criterion and severity (Critical = WCAG A, High = WCAG AA, Medium = best practice, Low = AAA)
+    - Per-component breakdown with file path, issue description, problem code, and recommended fix
+    - Contrast failure table: element, foreground hex, background hex, current ratio, required ratio
+    - Framework-specific notes (e.g. shadcn/Radix component gaps)
+    - Severity colour coding
+  </TabItem>
+  <TabItem label="Stakeholder report">
+    **`reports/accessibility-owner-report-YYYY-MM-DD.html`**
+
+    - Why accessibility matters (legal risk, usability, SEO)
+    - Traffic-light summary: keyboard navigation, screen reader support, colour contrast, mobile usability
+    - Top 3 things users with disabilities experience right now
+    - What the developer will fix
+    - No code, no WCAG references
+  </TabItem>
+</Tabs>
+
+---
+
+## What gets fixed automatically
+
+<Aside type="caution" title="Colour contrast is flagged, not auto-fixed">
+  Colour changes affect brand identity. The command lists every failing pair with the exact current ratio and required ratio,
+  but leaves the colour decision to you. Only code-level fixes (ARIA, labels, focus rings) are applied automatically.
+</Aside>
+
+When not in "audit only" mode:
+
+- Adds `aria-label` to icon-only buttons missing visible text
+- Adds `aria-expanded` and `aria-controls` to toggle buttons
+- Fixes heading hierarchy violations
+- Adds `<label>` associations to unlabelled form inputs
+- Adds `role="dialog"` + focus-trap pattern to modal components (if not already handled by Radix/shadcn)
+- Replaces `outline: none` with a visible focus ring alternative
+- Adds descriptive `alt` text to images with empty or missing alts
+- Adds `@media (prefers-reduced-motion: reduce)` blocks to animations
+- **Flags** colour contrast failures with exact fix needed — does not change colours without confirmation
+
+---
+
+## Framework support
+
+| Framework | Status |
+|---|---|
+| Next.js (App Router + Pages) | ✅ Full support |
+| React (Vite, CRA) | ✅ Full support |
+| Vue / Nuxt | ✅ Full support |
+| SvelteKit | ✅ Full support |
+| Astro | ✅ Full support |
+| Plain HTML | ✅ Full support |
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+[View raw command source →](https://github.com/Oladiman/iron-scrolls/blob/main/commands/accessibility-audit.md)

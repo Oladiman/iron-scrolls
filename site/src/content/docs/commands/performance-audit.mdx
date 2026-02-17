@@ -1,0 +1,129 @@
+---
+title: /performance-audit
+description: Core Web Vitals performance audit — bundle size, images, fonts, third-party scripts, caching, LCP, CLS, and INP patterns.
+---
+
+import { Aside, Tabs, TabItem, Badge } from '@astrojs/starlight/components';
+
+<Badge text="Framework-aware" variant="note" />
+<Badge text="Core Web Vitals" variant="caution" />
+<Badge text="Generates reports" variant="success" />
+
+A comprehensive web performance audit focused on Core Web Vitals (LCP, CLS, INP) and the code patterns that cause them to fail. Run it in any project and Claude audits your bundle, images, fonts, third-party scripts, and caching strategy — then generates an actionable developer report and a plain-English stakeholder report.
+
+---
+
+## Usage
+
+```
+/performance-audit
+```
+
+To generate reports without applying fixes:
+
+```
+/performance-audit audit only
+```
+
+---
+
+## What it audits
+
+| Phase | What Claude checks |
+|---|---|
+| **1 — JS bundle** | Oversized dependencies (`moment` vs `dayjs`, full `lodash` vs tree-shaken), duplicate libraries, heavy client-side imports in server components, missing dynamic imports for large below-fold components, `"use client"` boundaries too high in the tree |
+| **2 — Images** | Format (AVIF/WebP vs PNG for photos), rendered size vs intrinsic size, `loading="lazy"` on below-fold images, `priority`/`fetchpriority="high"` on the LCP image, explicit `width`/`height` for CLS prevention, `sizes` prop on responsive images |
+| **3 — Fonts** | `font-display: swap`, subsetting, self-hosting via `next/font` or `@fontsource` vs external CDN, font preloading, number of font files |
+| **4 — Third-party scripts** | Loading strategy (`defer`/`async`/`lazyOnload`), render-blocking scripts in `<head>`, video embed facades, tag manager payload risk |
+| **5 — Core Web Vitals patterns** | LCP: hero image lazy-loading, render-blocking resources, fade-in animations on LCP element. CLS: images without dimensions, font swap shift, dynamic content inserted above existing. INP: heavy event handlers, expensive `useEffect` on interaction, unnecessary re-renders |
+| **6 — Caching & headers** | Static assets with hashed filenames should have `max-age=31536000, immutable`. HTML pages should not be long-cached. API routes should have `no-store` unless explicitly cacheable. |
+
+---
+
+## Reports generated
+
+<Tabs>
+  <TabItem label="Developer report">
+    **`reports/performance-audit-YYYY-MM-DD.html`**
+
+    - Framework and deployment target summary
+    - Core Web Vitals patterns: LCP, CLS, INP — Pass / Warning / Fail per pattern
+    - Bundle analysis: large chunks, unnecessary dependencies, missing code-splitting
+    - Image violation table: file, issue, fix
+    - Font loading issues and fixes
+    - Third-party script table: name, loading strategy, blocking status, recommendation
+    - Caching gaps: asset type, current header, recommended header
+    - Per-issue: severity (Critical / High / Medium / Low), file path, problem code, recommended fix
+  </TabItem>
+  <TabItem label="Stakeholder report">
+    **`reports/performance-owner-report-YYYY-MM-DD.html`**
+
+    - Why page speed matters (SEO ranking, conversion rates, bounce rates — with benchmarks)
+    - What a user on a mobile connection currently experiences
+    - Traffic-light summary: page load speed, image optimisation, search ranking impact, mobile experience
+    - Top 3 fixes and expected improvement for each
+    - What the developer will do
+    - No code, no jargon
+  </TabItem>
+</Tabs>
+
+---
+
+## What gets fixed automatically
+
+<Aside type="caution" title="Some fixes require your decision">
+  Removing third-party scripts (analytics, chat widgets) is a business decision — the command flags them but won't remove them without confirmation.
+  Image format conversion requires changes to your asset pipeline — flagged as a recommendation.
+  Large bundle splits require architectural review — flagged with a detailed recommendation.
+</Aside>
+
+When not in "audit only" mode, the command automatically applies:
+
+- `loading="lazy"` added to below-fold images
+- `priority` / `fetchpriority="high"` added to the LCP image
+- Explicit `width` and `height` added to images missing them (prevents CLS)
+- `strategy="lazyOnload"` applied to non-critical third-party scripts
+- `moment` → `dayjs` migration if `moment` is found (updates all imports)
+- Dynamic imports added for large below-fold components
+- `font-display: swap` added to custom font declarations
+- Recommended cache headers added to `next.config.js` or `vercel.json`
+
+Does **not** automatically:
+- Remove third-party scripts (asks first)
+- Change image formats (flags with recommendation)
+- Split large bundles (flags with architectural recommendation)
+
+---
+
+## Core Web Vitals targets
+
+| Metric | Good | Needs improvement | Poor |
+|---|---|---|---|
+| LCP (Largest Contentful Paint) | < 2.5s | 2.5–4s | > 4s |
+| CLS (Cumulative Layout Shift) | < 0.1 | 0.1–0.25 | > 0.25 |
+| INP (Interaction to Next Paint) | < 200ms | 200–500ms | > 500ms |
+
+---
+
+## Framework support
+
+| Framework | Notes |
+|---|---|
+| Next.js App Router | ✅ Full support — checks `next/image`, `next/font`, `<Script>`, RSC boundaries |
+| Next.js Pages Router | ✅ Full support |
+| Nuxt 3 | ✅ Full support — checks `nuxt/image`, `useHead` fonts |
+| SvelteKit | ✅ Full support |
+| Astro | ✅ Full support — checks Astro `<Image>`, island boundaries |
+| Vite / CRA | ✅ Full support — bundle + image analysis |
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/Oladiman/iron-scrolls.git
+cd iron-scrolls
+bash install.sh
+```
+
+[View raw command source →](https://github.com/Oladiman/iron-scrolls/blob/main/commands/performance-audit.md)

@@ -33,7 +33,11 @@ export default defineConfig({
         },
         {
           label: 'Commands',
-          items: [{ label: '/seo-audit', slug: 'commands/seo-audit' }],
+          items: [
+            { label: '/seo-audit', slug: 'commands/seo-audit' },
+            { label: '/accessibility-audit', slug: 'commands/accessibility-audit' },
+            { label: '/performance-audit', slug: 'commands/performance-audit' },
+          ],
         },
       ],
       head: [
