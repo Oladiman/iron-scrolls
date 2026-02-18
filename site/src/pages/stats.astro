@@ -1,0 +1,479 @@
+---
+/**
+ * Live Stats page — tracks command runs and active users via Supabase.
+ *
+ * SETUP (one-time, ~5 min):
+ * 1. Create a free project at https://supabase.com
+ * 2. Open the SQL editor and run the schema below
+ * 3. Copy your project URL + anon key from Project Settings → API
+ * 4. Add to your .env.local:
+ *      PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+ *      PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
+ * 5. Add the same vars as GitHub Actions secrets (repo Settings → Secrets)
+ *
+ * SQL schema:
+ * ─────────────────────────────────────────────────────────
+ * create table command_runs (
+ *   id          bigserial primary key,
+ *   command     text        not null,
+ *   created_at  timestamptz not null default now()
+ * );
+ * alter table command_runs enable row level security;
+ * create policy "anon insert" on command_runs for insert with check (true);
+ * create policy "anon select" on command_runs for select using (true);
+ *
+ * create table active_sessions (
+ *   session_id  text        primary key,
+ *   last_seen   timestamptz not null default now()
+ * );
+ * alter table active_sessions enable row level security;
+ * create policy "anon all"    on active_sessions for all using (true) with check (true);
+ * ─────────────────────────────────────────────────────────
+ */
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Live Stats',
+    description: 'Real-time command usage and active users across the Iron Scrolls Try page.',
+    tableOfContents: false,
+  }}
+>
+
+<div class="stats-page">
+
+  <!-- ── Online now ─────────────────────────────────────── -->
+  <div class="online-card">
+    <div class="online-left">
+      <span class="pulse-ring"></span>
+      <span class="pulse-dot"></span>
+      <span id="online-count" class="online-num">—</span>
+      <span class="online-label">people active right now</span>
+    </div>
+    <span class="online-note" id="last-updated">Connecting…</span>
+  </div>
+
+  <!-- ── Command usage ──────────────────────────────────── -->
+  <div class="usage-section">
+    <div class="usage-header">
+      <h2 class="usage-title">Command runs</h2>
+      <div class="period-tabs" role="group" aria-label="Time period">
+        <button class="period-tab active" data-period="all">All time</button>
+        <button class="period-tab" data-period="today">Today</button>
+        <button class="period-tab" data-period="week">This week</button>
+      </div>
+    </div>
+
+    <div id="usage-body" class="usage-body">
+      <div class="usage-placeholder">
+        <span class="usage-spinner">⚔</span> Loading…
+      </div>
+    </div>
+
+    <div class="usage-footer">
+      Total: <strong id="total-runs">—</strong> runs recorded
+      <span class="usage-note"> · live from the /try page</span>
+    </div>
+  </div>
+
+  <!-- ── No config notice ───────────────────────────────── -->
+  <div id="not-configured" class="not-configured" hidden>
+    <strong>Supabase not configured.</strong>
+    Set <code>PUBLIC_SUPABASE_URL</code> and <code>PUBLIC_SUPABASE_ANON_KEY</code> — see the
+    <a href="https://github.com/Oladiman/iron-scrolls/blob/main/site/src/pages/stats.astro">setup instructions</a>
+    at the top of this page's source file.
+  </div>
+
+</div>
+
+<style>
+  .stats-page {
+    max-width: 720px;
+  }
+
+  /* ── Online card ── */
+  .online-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    background: var(--is-color-surface);
+    border: 1px solid var(--sl-color-hairline);
+    border-left: 3px solid #27ae60;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .online-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    position: relative;
+  }
+
+  .pulse-dot {
+    width: 10px;
+    height: 10px;
+    background: #27ae60;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .pulse-ring {
+    position: absolute;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #27ae60;
+    animation: pulse-ring 2s ease-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%   { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+
+  .online-num {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--sl-color-white);
+    line-height: 1;
+    min-width: 2rem;
+    text-align: center;
+  }
+
+  .online-label {
+    font-size: 0.9rem;
+    color: var(--sl-color-gray-2);
+  }
+
+  .online-note {
+    font-size: 0.78rem;
+    color: var(--sl-color-gray-4);
+    font-family: var(--sl-font-mono, monospace);
+  }
+
+  /* ── Usage section ── */
+  .usage-section {
+    background: var(--is-color-surface);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .usage-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+  }
+
+  .usage-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--sl-color-white);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .period-tabs {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .period-tab {
+    padding: 0.2rem 0.7rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--sl-color-gray-3);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .period-tab:hover {
+    color: var(--sl-color-accent);
+    border-color: var(--sl-color-accent);
+  }
+
+  .period-tab.active {
+    background: var(--sl-color-accent);
+    border-color: var(--sl-color-accent);
+    color: white;
+  }
+
+  /* ── Usage body ── */
+  .usage-body {
+    padding: 0.5rem 0;
+    min-height: 200px;
+  }
+
+  .usage-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 180px;
+    color: var(--sl-color-gray-4);
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+
+  .usage-spinner {
+    animation: spin-pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes spin-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .usage-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 1.25rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+  }
+
+  .usage-row:last-child { border-bottom: none; }
+
+  .usage-cmd {
+    font-family: var(--sl-font-mono, monospace);
+    font-size: 0.82rem;
+    color: var(--sl-color-accent);
+    font-weight: 600;
+    width: 11rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .usage-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: var(--sl-color-hairline);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .usage-bar {
+    height: 100%;
+    background: var(--sl-color-accent);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    min-width: 2px;
+  }
+
+  .usage-count {
+    font-family: var(--sl-font-mono, monospace);
+    font-size: 0.82rem;
+    color: var(--sl-color-gray-2);
+    width: 3rem;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .usage-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--sl-color-gray-4);
+    font-size: 0.875rem;
+  }
+
+  .usage-footer {
+    padding: 0.6rem 1.25rem;
+    border-top: 1px solid var(--sl-color-hairline);
+    font-size: 0.78rem;
+    color: var(--sl-color-gray-4);
+    font-family: var(--sl-font-mono, monospace);
+  }
+
+  .usage-footer strong {
+    color: var(--sl-color-gray-2);
+  }
+
+  .usage-note { opacity: 0.7; }
+
+  /* ── Not configured ── */
+  .not-configured {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--sl-color-orange-low);
+    border: 1px solid var(--sl-color-orange);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.65;
+  }
+
+  .not-configured strong { color: var(--sl-color-orange-high); }
+  .not-configured code {
+    font-family: var(--sl-font-mono, monospace);
+    font-size: 0.82em;
+    background: var(--sl-color-bg-inline-code);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+  }
+  .not-configured a { color: var(--sl-color-accent); }
+</style>
+
+<script>
+  const SB_URL  = import.meta.env.PUBLIC_SUPABASE_URL  ?? '';
+  const SB_KEY  = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+  const OK      = !!(SB_URL && SB_KEY);
+
+  const HEADERS = {
+    apikey: SB_KEY,
+    Authorization: `Bearer ${SB_KEY}`,
+    'Content-Type': 'application/json',
+  };
+
+  const COMMANDS = [
+    'seo-audit',
+    'accessibility-audit',
+    'performance-audit',
+    'security-audit',
+    'pr-review',
+    'api-design-review',
+    'test-coverage',
+  ];
+
+  // ── Session presence ──────────────────────────────────────────
+  const SESSION = (() => {
+    const k = 'is_session_id';
+    const existing = localStorage.getItem(k);
+    if (existing) return existing;
+    const id = crypto.randomUUID();
+    localStorage.setItem(k, id);
+    return id;
+  })();
+
+  async function heartbeat() {
+    if (!OK) return;
+    try {
+      await fetch(`${SB_URL}/rest/v1/active_sessions`, {
+        method: 'POST',
+        headers: { ...HEADERS, Prefer: 'resolution=merge-duplicates' },
+        body: JSON.stringify({ session_id: SESSION, last_seen: new Date().toISOString() }),
+      });
+    } catch (_) {}
+  }
+
+  async function fetchOnlineCount() {
+    if (!OK) return null;
+    try {
+      const since = new Date(Date.now() - 90_000).toISOString();
+      const res = await fetch(
+        `${SB_URL}/rest/v1/active_sessions?last_seen=gte.${since}&select=session_id`,
+        { headers: { ...HEADERS, Prefer: 'count=exact', 'Range-Unit': 'items', Range: '0-0' } }
+      );
+      const range = res.headers.get('content-range');
+      if (range) {
+        const total = range.split('/')[1];
+        return total === '*' ? null : parseInt(total, 10);
+      }
+      return null;
+    } catch (_) { return null; }
+  }
+
+  // ── Command counts ────────────────────────────────────────────
+  async function fetchCommandCounts(period) {
+    if (!OK) return null;
+    try {
+      let url = `${SB_URL}/rest/v1/command_runs?select=command`;
+      if (period === 'today') {
+        const start = new Date();
+        start.setHours(0, 0, 0, 0);
+        url += `&created_at=gte.${start.toISOString()}`;
+      } else if (period === 'week') {
+        const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        url += `&created_at=gte.${start.toISOString()}`;
+      }
+      const res = await fetch(url, { headers: HEADERS });
+      if (!res.ok) return null;
+      const rows = await res.json();
+      const counts = {};
+      COMMANDS.forEach(c => { counts[c] = 0; });
+      rows.forEach(r => { if (counts[r.command] !== undefined) counts[r.command]++; });
+      return counts;
+    } catch (_) { return null; }
+  }
+
+  // ── Render ────────────────────────────────────────────────────
+  function renderCounts(counts) {
+    const body = document.getElementById('usage-body');
+    const totalEl = document.getElementById('total-runs');
+    if (!counts) {
+      body.innerHTML = '<div class="usage-empty">Could not load data — check console.</div>';
+      return;
+    }
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const total = entries.reduce((s, [, n]) => s + n, 0);
+    const max = Math.max(1, entries[0]?.[1] ?? 1);
+    totalEl.textContent = total.toLocaleString();
+    if (total === 0) {
+      body.innerHTML = '<div class="usage-empty">No runs recorded yet — try a command on the <a href="/iron-scrolls/try/">Try it</a> page.</div>';
+      return;
+    }
+    body.innerHTML = entries.map(([cmd, count]) => `
+      <div class="usage-row">
+        <span class="usage-cmd">/${cmd}</span>
+        <div class="usage-bar-wrap">
+          <div class="usage-bar" style="width:${Math.round((count / max) * 100)}%"></div>
+        </div>
+        <span class="usage-count">${count.toLocaleString()}</span>
+      </div>
+    `).join('');
+  }
+
+  function updateOnlineUI(count) {
+    const el = document.getElementById('online-count');
+    const note = document.getElementById('last-updated');
+    el.textContent = count !== null ? count.toLocaleString() : '—';
+    note.textContent = `Updated ${new Date().toLocaleTimeString()}`;
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  if (!OK) {
+    document.getElementById('not-configured').removeAttribute('hidden');
+    document.getElementById('online-count').textContent = '—';
+    document.getElementById('last-updated').textContent = 'Not connected';
+    document.getElementById('usage-body').innerHTML =
+      '<div class="usage-empty">Supabase not configured — see setup instructions.</div>';
+  } else {
+    // Presence
+    heartbeat();
+    setInterval(heartbeat, 30_000);
+
+    // Online count
+    fetchOnlineCount().then(updateOnlineUI);
+    setInterval(() => fetchOnlineCount().then(updateOnlineUI), 30_000);
+
+    // Command counts
+    let currentPeriod = 'all';
+    fetchCommandCounts('all').then(renderCounts);
+
+    document.querySelectorAll('.period-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.period-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPeriod = btn.dataset.period;
+        document.getElementById('usage-body').innerHTML =
+          '<div class="usage-placeholder"><span class="usage-spinner">⚔</span> Loading…</div>';
+        fetchCommandCounts(currentPeriod).then(renderCounts);
+      });
+    });
+  }
+</script>
+
+</StarlightPage>

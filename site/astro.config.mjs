@@ -34,6 +34,7 @@ export default defineConfig({
             { label: 'What is Iron Scrolls?', link: '/guide/' },
             { label: 'Installation', slug: 'install' },
             { label: 'Try it', link: '/try/' },
+            { label: 'Live Stats', link: '/stats/' },
           ],
         },
         {

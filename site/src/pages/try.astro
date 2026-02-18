@@ -10,9 +10,16 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
   }}
 >
 
-<p class="try-intro">
-  Enter any publicly accessible URL and pick a command. The analysis runs directly in your browser using the same checks the full CLI command performs. Commands that need a local codebase (PR review, API review, test coverage) require the CLI.
-</p>
+<div class="try-header">
+  <p class="try-intro">
+    Enter any publicly accessible URL and pick a command. The analysis runs directly in your browser using the same checks the full CLI command performs. Commands that need a local codebase (PR review, API review, test coverage) require the CLI.
+  </p>
+  <a href="/iron-scrolls/stats/" class="live-badge" id="live-badge" aria-label="View live stats">
+    <span class="live-dot"></span>
+    <span id="live-count">—</span>
+    <span class="live-text">online</span>
+  </a>
+</div>
 
 <form id="analyze-form" class="analyze-form">
   <div class="form-row">
@@ -75,12 +82,62 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 </div>
 
 <style>
+  .try-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
   .try-intro {
     color: var(--sl-color-gray-2);
     font-size: 0.95rem;
-    margin-bottom: 2rem;
+    margin: 0;
     line-height: 1.65;
+    flex: 1 1 320px;
   }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    background: var(--is-color-surface);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem 0.3rem 0.55rem;
+    text-decoration: none;
+    color: var(--sl-color-gray-2);
+    font-size: 0.78rem;
+    transition: border-color 0.15s;
+  }
+
+  .live-badge:hover { border-color: var(--sl-color-accent); }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: #27ae60;
+    border-radius: 50%;
+    animation: live-pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes live-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  #live-count {
+    font-weight: 700;
+    color: var(--sl-color-white);
+    font-family: var(--sl-font-mono, monospace);
+    font-size: 0.82rem;
+  }
+
+  .live-text { color: var(--sl-color-gray-3); }
 
   /* ── Form ── */
   .analyze-form {
@@ -315,6 +372,65 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 </style>
 
 <script>
+  /* ── Analytics & Presence ────────────────────────────────────── */
+  const SB_URL = import.meta.env.PUBLIC_SUPABASE_URL  ?? '';
+  const SB_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+  const SB_OK  = !!(SB_URL && SB_KEY);
+  const SB_HDR = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
+
+  /* Session ID — restored across page loads */
+  const SESSION = (() => {
+    const k = 'is_session_id';
+    return localStorage.getItem(k) ?? (() => {
+      const id = crypto.randomUUID();
+      localStorage.setItem(k, id);
+      return id;
+    })();
+  })();
+
+  async function sbHeartbeat() {
+    if (!SB_OK) return;
+    fetch(`${SB_URL}/rest/v1/active_sessions`, {
+      method: 'POST',
+      headers: { ...SB_HDR, Prefer: 'resolution=merge-duplicates' },
+      body: JSON.stringify({ session_id: SESSION, last_seen: new Date().toISOString() }),
+    }).catch(() => {});
+  }
+
+  async function sbTrackRun(command) {
+    if (!SB_OK) return;
+    fetch(`${SB_URL}/rest/v1/command_runs`, {
+      method: 'POST',
+      headers: SB_HDR,
+      body: JSON.stringify({ command }),
+    }).catch(() => {});
+  }
+
+  async function sbLiveCount() {
+    if (!SB_OK) return;
+    try {
+      const since = new Date(Date.now() - 90_000).toISOString();
+      const res = await fetch(
+        `${SB_URL}/rest/v1/active_sessions?last_seen=gte.${since}&select=session_id`,
+        { headers: { ...SB_HDR, Prefer: 'count=exact', 'Range-Unit': 'items', Range: '0-0' } }
+      );
+      const range = res.headers.get('content-range');
+      if (range) {
+        const n = range.split('/')[1];
+        const el = document.getElementById('live-count');
+        if (el && n !== '*') el.textContent = parseInt(n, 10).toString();
+      }
+    } catch (_) {}
+  }
+
+  /* Start presence: send heartbeat immediately and every 30 s */
+  sbHeartbeat();
+  setInterval(sbHeartbeat, 30_000);
+  /* Fetch live count for the badge */
+  sbLiveCount();
+  setInterval(sbLiveCount, 30_000);
+  /* ── End Analytics ───────────────────────────────────────────── */
+
   const form = document.getElementById('analyze-form');
   const urlInput = document.getElementById('url-input');
   const commandSelect = document.getElementById('command-select');
@@ -345,6 +461,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
       renderResults(command, url, results);
       hide(loadingState);
       show(resultsState);
+      sbTrackRun(command); /* record the run */
     } catch (err) {
       hide(loadingState);
       errorDetail.textContent = ' ' + (err.message || 'Unknown error.');
