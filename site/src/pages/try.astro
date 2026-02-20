@@ -24,10 +24,10 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 <form id="analyze-form" class="analyze-form">
   <div class="form-row">
     <input
-      type="url"
+      type="text"
       id="url-input"
-      placeholder="https://example.com"
-      value="https://www.npmjs.com"
+      placeholder="example.com or www.example.com"
+      value="www.npmjs.com"
       autocomplete="url"
       spellcheck="false"
       required
@@ -464,9 +464,14 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = urlInput.value.trim();
+    let url = urlInput.value.trim();
     const command = commandSelect.value;
     if (!url) return;
+
+    // Normalize URL: add https:// if no protocol specified
+    if (!url.match(/^https?:\/\//i)) {
+      url = 'https://' + url;
+    }
 
     setLoading(true);
     hide(errorState);
