@@ -26,7 +26,8 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     <input
       type="url"
       id="url-input"
-      placeholder="https://yoursite.com"
+      placeholder="https://example.com"
+      value="https://www.npmjs.com"
       autocomplete="url"
       spellcheck="false"
       required
@@ -41,8 +42,9 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     </button>
   </div>
   <p class="form-note">
-    Tip: paste your own site URL for real results. The browser demo runs a subset of phases —
-    <a href="/iron-scrolls/install/">install the CLI</a> for the full multi-phase audit with HTML reports and auto-fix.
+    <strong>Demo limitation:</strong> Large platforms (Google, GitHub, Twitter) block browser requests.
+    Try your own site or smaller public sites · Works best with: personal sites, docs pages, marketing sites ·
+    <a href="/iron-scrolls/install/">Install the CLI</a> to analyze any site locally with the full audit.
   </p>
 </form>
 
@@ -55,10 +57,13 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 
 <div id="error-state" hidden>
   <div class="error-box">
-    <strong>Could not fetch that URL.</strong>
-    <span id="error-detail"></span>
-    <br />
-    Many sites block browser fetches via CORS — <a href="/iron-scrolls/install/">install the CLI</a> to analyse any site locally.
+    <strong>⚠ Could not fetch that URL</strong>
+    <p class="error-reason" id="error-detail"></p>
+    <p class="error-help">
+      <strong>Why?</strong> Large platforms and many sites block browser-based fetching for security.
+      <br><strong>Fix:</strong> Try a smaller site (your own, a docs page, a marketing site), or
+      <a href="/iron-scrolls/install/">install the CLI</a> to analyze any site locally.
+    </p>
   </div>
 </div>
 
@@ -93,9 +98,9 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 
   .try-intro {
     color: var(--sl-color-gray-2);
-    font-size: 0.95rem;
+    font-size: 1rem;
     margin: 0;
-    line-height: 1.65;
+    line-height: 1.7;
     flex: 1 1 320px;
   }
 
@@ -206,9 +211,17 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
   }
 
   .form-note {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--sl-color-gray-3);
-    margin-top: 0.6rem;
+    line-height: 1.7;
+    margin-top: 0.75rem;
+  }
+  .form-note a {
+    color: var(--sl-color-accent);
+    text-decoration: none;
+  }
+  .form-note a:hover {
+    color: var(--sl-color-accent-high);
   }
 
   /* ── Loading ── */
@@ -235,14 +248,21 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 
   /* ── Error ── */
   .error-box {
-    padding: 1rem 1.25rem;
+    padding: 1.25rem 1.5rem;
     background: #1a0505;
     border: 1px solid #c0392b55;
     border-left: 3px solid var(--sl-color-accent);
     border-radius: 6px;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     color: var(--sl-color-gray-2);
-    line-height: 1.6;
+    line-height: 1.75;
+  }
+  .error-box a {
+    color: var(--sl-color-accent);
+    text-decoration: none;
+  }
+  .error-box a:hover {
+    color: var(--sl-color-accent-high);
   }
   .error-box strong {
     color: var(--sl-color-accent);

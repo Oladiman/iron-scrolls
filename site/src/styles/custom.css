@@ -6,14 +6,14 @@
   --sl-color-accent:      #c0392b;
   --sl-color-accent-high: #e8604c;
 
-  /* Parchment whites */
-  --sl-color-white:       #f7f2ec;
+  /* Parchment whites (slightly softer for reduced eye strain) */
+  --sl-color-white:       #f0ebe5;
 
-  /* Deep ink black */
-  --sl-color-black:       #0d0905;
+  /* Deep ink black (slightly lighter for better readability) */
+  --sl-color-black:       #12100d;
 
   /* Elevated surface (slightly lighter than page bg — for cards/panels) */
-  --is-color-surface:     #1c0f0c;
+  --is-color-surface:     #1c1411;
 }
 
 [data-theme='light'] {
@@ -27,10 +27,27 @@
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
 
+/* Increase base font size for better readability */
+:root {
+  --sl-text-body: 1rem;
+  --sl-line-height: 1.75;
+}
+
 .sl-markdown-content h1,
 .sl-markdown-content h2,
 .sl-markdown-content h3 {
   letter-spacing: -0.02em;
+}
+
+/* Improve body text readability */
+.sl-markdown-content p {
+  line-height: 1.75;
+  font-size: 1.05rem;
+}
+
+.sl-markdown-content li {
+  line-height: 1.75;
+  margin-bottom: 0.4rem;
 }
 
 /* ─── Hero install block ──────────────────────────────────────────────────── */
